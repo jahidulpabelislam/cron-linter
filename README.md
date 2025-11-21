@@ -1,14 +1,16 @@
-# PHP Censor - Cron Linting Plugin
+# PHP Cron Linter
 
-Lint cron files during a PHPCI/Censor build.
+Lint cron files.
 
 # Installation
 
-```composer require dave13h/php-censor-cronlint-plugin```
+```composer require jpi/cron-linter```
+
+Add `.cronlinter.yml` file to your project root, that provides a list of files to be linted.
 
 # Usage
 ```yml
-test:
-  cron_lint:
-      files: ['config/cron']
+files:
+  - /cron-1
+  - /cron-2
 ```

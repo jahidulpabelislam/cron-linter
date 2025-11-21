@@ -1,11 +1,10 @@
 {
-    "name": "dave13h/php-censor-cronlint-plugin",
-    "description": "PHP Censor plugin for Cron Linting",
+    "name": "jpi/cron-linter",
+    "description": "Cron Linting",
     "minimum-stability": "stable",
-    "type": "php-censor-plugin",
+    "type": "library",
     "keywords": [
         "php",
-        "php-censor",
         "testing",
         "open-source",
         "ci",
@@ -13,32 +12,16 @@
         "cron",
         "lint"
     ],
-    "homepage": "https://github.com/Dave13h/PHP-Censor-CronLint-Plugin",
+    "homepage": "https://github.com/jahidulpabelislam/cronlinter",
     "license": "BSD 3-Clause",
-    "authors": [
-        {
-            "name": "Dave13h",
-            "email": "dave@d3r.com",
-            "role": "Developer"
-        }
-    ],
     "require": {
-        "php": ">=7.0"
+        "php": "^8.0",
+        "symfony/console": "^5.0 || ^6.0 || 7.0",
+        "symfony/yaml": "^5.0 || ^6.0 || 7.0"
     },
     "autoload": {
         "psr-4": {
-          "PHPCensor\\Plugin\\": "src"
-        }
-    },
-    "extra": {
-        "php-censor": {
-            "pluginNamespace": "PHPCensor\\Plugin\\",
-            "suppliedPlugins": [
-                {
-                    "name": "CronLint",
-                    "class": "CronLint"
-                }
-            ]
+            "JPI\\CronLinter\\": "src"
         }
     }
 }
