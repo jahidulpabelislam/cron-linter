@@ -16,26 +16,26 @@ class Command extends BaseCommand
     protected function configure(): void
     {
         $this
-            ->setName('check')
-            ->setDescription('Validate Cron files')
+            ->setName("check")
+            ->setDescription("Validate Cron files")
             ->addOption(
-                'config-file',
+                "config-file",
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'File to read cronlinter config from in yml format',
-                '.cronlinter.yml'
+                "File to read cronlinter config from in yml format",
+                ".cronlinter.yml"
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            $configuration = Yaml::parseFile($input->getOption('config-file'));
+            $configuration = Yaml::parseFile($input->getOption("config-file"));
         } catch (ParseException) {
             $configuration = [];
         }
 
-        $errors = (new Linter($configuration['files'] ?? [], getcwd()))();
+        $errors = (new Linter($configuration["files"] ?? [], getcwd()))();
 
         $output->writeln($errors);
 

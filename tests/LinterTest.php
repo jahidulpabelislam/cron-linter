@@ -11,7 +11,7 @@ final class LinterTest extends TestCase {
 
     public function testAll(): void {
         $linter = new Linter([]);
-        $linter->validateLine('* * * * * php test.php', 1);
+        $linter->validateLine("* * * * * php test.php", 1);
         $this->assertEmpty($linter->getErrors());
     }
 }
