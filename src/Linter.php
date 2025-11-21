@@ -8,9 +8,9 @@ final class Linter
 {
     private array $errors = [];
 
-    public static function fromFiles(array $files, string $baseDir = ""): array
+    public static function lintFiles(array $files, string $baseDir = ""): array
     {
-        $linter = new Linter();
+        $linter = new static();
         if (empty($files)) {
             return $linter->errors;
         }
@@ -31,9 +31,9 @@ final class Linter
         return $linter->errors;
     }
 
-    public static function fromContent(string $content): array
+    public static function lintContent(string $content): array
     {
-        $linter = new Linter();
+        $linter = new static();
         if (empty($content)) {
             return $linter->errors;
         }
