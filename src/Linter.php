@@ -76,7 +76,7 @@ final class Linter
         $regEx = [
             "minhour" => "/^([\*|\d]+)$|^([\*|\d]+?(\-\d+))$|^([\*]\/\d+)$|^([\d+]\/\d+?(\-\d+))$|^(\d+-\d+\/[\d]+)$/i",
             "daymonth" => "/^(\d{1,2}|\*)$/i",
-            "month" => "/^(\d{1,2}|\*)$/i",
+            "month" => "/^(\*|\d{1,2}|[a-z]{3})$/i",
             "dayweek" => "/^(\*|\d|[a-z]{3})$/i",
             "cmdoverflow" => "/^(\d|\*)$/i",
         ];
@@ -106,6 +106,19 @@ final class Linter
         foreach ($daysOfMonth as $dayOfMonth) {
             if (!preg_match($regEx["daymonth"], $dayOfMonth) || ($dayOfMonth != "*" && !in_array($dayOfMonth, $validDaysOfMonth))) {
                 $this->errors[] = "$prefix Day of month[$offset]: $dayOfMonth";
+            }
+            ++$offset;
+        }
+
+        $offset = 0;
+        $validMonths = array_merge(
+            range(1, 12),
+            ["*", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+        );
+        $months = explode(",", $months ?? "");
+        foreach ($months as $month) {
+            if (!preg_match($regEx["month"], $month) || !in_array(strtolower($month), $validMonths)) {
+                $this->errors[] = "$prefix Month[$offset]: $month";
             }
             ++$offset;
         }
