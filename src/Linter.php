@@ -91,27 +91,33 @@ final class Linter
         }
 
         $offset = 0;
+        $validHours = range(0, 23);
         $hours = explode(",", $hours);
         foreach ($hours as $hour) {
-            if (!preg_match($regEx["minhour"], $hour)) {
+            if (!preg_match($regEx["minhour"], $hour) || ($hour != "*" && !in_array($hour, $validHours))) {
                 $this->errors[] = "$prefix Hour[$offset]: $hour";
             }
             ++$offset;
         }
 
         $offset = 0;
+        $validDaysOfMonth = range(1, 31);
         $daysOfMonth = explode(",", $daysOfMonth ?? "");
         foreach ($daysOfMonth as $dayOfMonth) {
-            if (!preg_match($regEx["daymonth"], $dayOfMonth)) {
+            if (!preg_match($regEx["daymonth"], $dayOfMonth) || ($dayOfMonth != "*" && !in_array($dayOfMonth, $validDaysOfMonth))) {
                 $this->errors[] = "$prefix Day of month[$offset]: $dayOfMonth";
             }
             ++$offset;
         }
 
         $offset = 0;
+        $validDaysOfWeek = array_merge(
+            range(0, 6),
+            ["*", "mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+        );
         $daysOfWeek = explode(",", $daysOfWeek ?? "");
         foreach ($daysOfWeek as $dayOfWeek) {
-            if (!preg_match($regEx["dayweek"], $dayOfWeek)) {
+            if (!preg_match($regEx["dayweek"], $dayOfWeek) || !in_array(strtolower($dayOfWeek), $validDaysOfWeek)) {
                 $this->errors[] = "$prefix Day of week[$offset]: $dayOfWeek";
             }
             ++$offset;
