@@ -73,71 +73,51 @@ final class CronLinter
         $cmd = implode(" ", array_slice($args, 5));
         list($minutes, $hours, $daysOfMonth, $months, $daysOfWeek) = array_slice($args, 0, 5);
 
-        $regEx = [
-            "minhour" => "/^(\d{1,2}|\*)$/",
-            "daymonth" => "/^(\d{1,2}|\*)$/",
-            "month" => "/^(\*|\d{1,2}|[a-z]{3})$/i",
-            "dayweek" => "/^(\*|\d|[a-z]{3})$/i",
-            "cmdoverflow" => "/^(\d|\*)$/i",
+        $checks = [
+            "Minute" => [
+                "values" => $minutes,
+                "options" => range(0, 59),
+            ],
+            "Hour" => [
+                "values" => $hours,
+                "options" => range(0, 23),
+            ],
+            "Day of month" => [
+                "values" => $daysOfMonth,
+                "options" => range(1, 31),
+            ],
+            "Month" => [
+                "values" => $months,
+                "options" => array_merge(
+                    range(1, 12),
+                    ["*", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+                ),
+            ],
+            "Day of week" => [
+                "values" => $daysOfWeek,
+                "options" => array_merge(
+                    range(0, 6),
+                    ["*", "mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+                ),
+            ],
         ];
 
-        $offset = 0;
-        $validMinutes = range(0, 59);
-        $minutes = explode(",", $minutes);
-        foreach ($minutes as $minute) {
-            if (!preg_match($regEx["minhour"], $minute) || ($minute != "*" && !in_array($minute, $validMinutes))) {
-                $this->errors[] = "$prefix Minute[$offset]: $minute";
+        $defaultRegex = "/^(\d{1,2}|\*)$/";
+
+        foreach ($checks as $name => $data) {
+            $offset = 0;
+            $regEx = $data["regex"] ?? $defaultRegex;
+            $validValues = $data["options"];
+            $values = explode(",", $data["values"]);
+            foreach ($values as $value) {
+                if (!preg_match($regEx, $value) || ($value != "*" && !in_array($value, $validValues))) {
+                    $this->errors[] = "$prefix {$name}[$offset]: $value";
+                }
+                ++$offset;
             }
-            ++$offset;
         }
 
-        $offset = 0;
-        $validHours = range(0, 23);
-        $hours = explode(",", $hours);
-        foreach ($hours as $hour) {
-            if (!preg_match($regEx["minhour"], $hour) || ($hour != "*" && !in_array($hour, $validHours))) {
-                $this->errors[] = "$prefix Hour[$offset]: $hour";
-            }
-            ++$offset;
-        }
-
-        $offset = 0;
-        $validDaysOfMonth = range(1, 31);
-        $daysOfMonth = explode(",", $daysOfMonth ?? "");
-        foreach ($daysOfMonth as $dayOfMonth) {
-            if (!preg_match($regEx["daymonth"], $dayOfMonth) || ($dayOfMonth != "*" && !in_array($dayOfMonth, $validDaysOfMonth))) {
-                $this->errors[] = "$prefix Day of month[$offset]: $dayOfMonth";
-            }
-            ++$offset;
-        }
-
-        $offset = 0;
-        $validMonths = array_merge(
-            range(1, 12),
-            ["*", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
-        );
-        $months = explode(",", $months ?? "");
-        foreach ($months as $month) {
-            if (!preg_match($regEx["month"], $month) || !in_array(strtolower($month), $validMonths)) {
-                $this->errors[] = "$prefix Month[$offset]: $month";
-            }
-            ++$offset;
-        }
-
-        $offset = 0;
-        $validDaysOfWeek = array_merge(
-            range(0, 6),
-            ["*", "mon", "tue", "wed", "thu", "fri", "sat", "sun"],
-        );
-        $daysOfWeek = explode(",", $daysOfWeek ?? "");
-        foreach ($daysOfWeek as $dayOfWeek) {
-            if (!preg_match($regEx["dayweek"], $dayOfWeek) || !in_array(strtolower($dayOfWeek), $validDaysOfWeek)) {
-                $this->errors[] = "$prefix Day of week[$offset]: $dayOfWeek";
-            }
-            ++$offset;
-        }
-
-        if (preg_match($regEx["cmdoverflow"], (string) (substr($cmd, 0, 1) == "*"))) {
+        if (preg_match("/^(\d|\*)$/i", (string) (substr($cmd, 0, 1) == "*"))) {
             $this->errors[] = "Line $lineNo has invalid Cmd: $cmd";
         }
     }
