@@ -20,8 +20,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "symfony/console": "^5.0 || ^6.0 || 7.0",
-        "symfony/yaml": "^5.0 || ^6.0 || 7.0"
+        "symfony/console": "^5.0 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.0 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "jpi/codestyles": "^1.0"
