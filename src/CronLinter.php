@@ -71,10 +71,10 @@ final class CronLinter
         }
 
         $cmd = implode(" ", array_slice($args, 5));
-        list($mins, $hours, $daysOfMonth, $months, $daysOfWeek) = array_slice($args, 0, 5);
+        list($minutes, $hours, $daysOfMonth, $months, $daysOfWeek) = array_slice($args, 0, 5);
 
         $regEx = [
-            "minhour" => "/^([\*|\d]+)$|^([\*|\d]+?(\-\d+))$|^([\*]\/\d+)$|^([\d+]\/\d+?(\-\d+))$|^(\d+-\d+\/[\d]+)$/i",
+            "minhour" => "/^(\d{1,2}|\*)$/",
             "daymonth" => "/^(\d{1,2}|\*)$/",
             "month" => "/^(\*|\d{1,2}|[a-z]{3})$/i",
             "dayweek" => "/^(\*|\d|[a-z]{3})$/i",
@@ -82,10 +82,11 @@ final class CronLinter
         ];
 
         $offset = 0;
-        $mins = explode(",", $mins);
-        foreach ($mins as $min) {
-            if (!preg_match($regEx["minhour"], $min)) {
-                $this->errors[] = "$prefix Minute[$offset]: $min";
+        $validMinutes = range(0, 59);
+        $minutes = explode(",", $minutes);
+        foreach ($minutes as $minute) {
+            if (!preg_match($regEx["minhour"], $minute) || ($minute != "*" && !in_array($minute, $validMinutes))) {
+                $this->errors[] = "$prefix Minute[$offset]: $minute";
             }
             ++$offset;
         }
