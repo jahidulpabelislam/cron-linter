@@ -60,6 +60,7 @@ final class Linter
 
         if (count($args) < 6) {
             $this->errors[] = sprintf("Line %d has missing time expression", $lineNo);
+            return;
         }
 
         $cmd = implode(' ', array_slice($args, 5));
