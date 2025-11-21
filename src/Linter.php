@@ -52,6 +52,11 @@ final class Linter
                 }
             )
         );
+
+        if (count($args) < 6) {
+            $this->errors[] = sprintf("Line %d has missing time expression", $lineNo);
+        }
+
         $cmd = implode(' ', array_slice($args, 5));
         list($mins, $hours, $dayOfMonth, $month, $dayOfWeek) = array_slice($args, 0, 5);
 
