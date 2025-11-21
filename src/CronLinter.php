@@ -113,7 +113,7 @@ final class CronLinter
             $validValues = $data["options"];
             $values = explode(",", $data["values"]);
             foreach ($values as $value) {
-                if (!preg_match($regEx, $value) || ($value != "*" && !in_array($value, $validValues))) {
+                if (!preg_match($regEx, $value) || ($value !== "*" && !in_array(strtolower($value), $validValues))) {
                     $this->errors[] = "$prefix {$name}[$offset]: $value";
                 }
                 ++$offset;
