@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace JPI\CronLinter;
+namespace JPI;
 
-final class Linter
+final class CronLinter
 {
     private array $errors = [];
 

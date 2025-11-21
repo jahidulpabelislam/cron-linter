@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JPI\CronLinter;
 
+use JPI\CronLinter;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,7 +36,7 @@ class Command extends BaseCommand
             $configuration = [];
         }
 
-        $errors = Linter::lintFiles($configuration["files"] ?? [], getcwd());
+        $errors = CronLinter::lintFiles($configuration["files"] ?? [], getcwd());
 
         $output->writeln($errors);
 
