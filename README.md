@@ -7,7 +7,7 @@
 [![License](https://poser.pugx.org/jpi/cron-linter/license)](https://packagist.org/packages/jpi/cron-linter)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jahidulpabelislam/cron-linter/2.x.svg?label=last%20activity)
 
-Lint cron files.
+Lint cron files. Based on the work of @Dave13h from https://github.com/Dave13h/php-censor-cronlint-plugin, just the PHPCensor aspect removed and made into a standalone package.
 
 # Installation
 
