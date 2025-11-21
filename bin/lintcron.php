@@ -3,7 +3,7 @@
 
 declare(strict_types=1);
 
-use JPI\CronLinter\LintCommand;
+use JPI\CronLinter\Command;
 use Symfony\Component\Console\Application;
 
 $paths = [
@@ -33,7 +33,7 @@ if (!$loaded) {
 }
 
 (new Application('Cron linter', '@package_version@'))
-    ->add(new LintCommand())
+    ->add(new Command())
     ->getApplication()
     ->setDefaultCommand('check', true)
     ->run();

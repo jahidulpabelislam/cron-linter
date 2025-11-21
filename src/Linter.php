@@ -8,23 +8,18 @@ final class Linter
 {
     private array $errors = [];
 
-    public function __construct(private array $files)
+    public function __construct(private array $files, private string $baseDir = '')
     {
     }
 
-    /**
-     * Lint each of the files from the options.
-     */
-    public function run(): array
+    public function __invoke(): array
     {
         if (empty($this->files)) {
             return $this->errors;
         }
 
-        $buildDir = getcwd();
-
         foreach ($this->files as $filepath) {
-            $filepath = sprintf('%s%s', $buildDir, $filepath);
+            $filepath = $this->baseDir . "/" . ltrim($filepath, '/');
             if (!file_exists($filepath)) {
                 $this->errors[] = 'Missing cron file: ' . $filepath;
                 continue;

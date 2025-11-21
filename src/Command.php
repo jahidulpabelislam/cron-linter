@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace JPI\CronLinter;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class LintCommand extends Command
+class Command extends BaseCommand
 {
     protected function configure(): void
     {
@@ -29,20 +29,16 @@ class LintCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $configFile = $input->getOption('config-file');
-
         try {
-            $configuration = Yaml::parseFile($configFile);
+            $configuration = Yaml::parseFile($input->getOption('config-file'));
         } catch (ParseException) {
             $configuration = [];
         }
 
-        $linter = new Linter($configuration['files'] ?? []);
-
-        $errors = $linter->run();
+        $errors = (new Linter($configuration['files'] ?? [], getcwd()))();
 
         $output->writeln($errors);
 
-        return empty($errors) ? Command::SUCCESS : Command::FAILURE;
+        return empty($errors) ? self::SUCCESS : self::FAILURE;
     }
 }
