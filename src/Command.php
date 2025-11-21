@@ -35,7 +35,7 @@ class Command extends BaseCommand
             $configuration = [];
         }
 
-        $errors = (new Linter($configuration["files"] ?? [], getcwd()))();
+        $errors = Linter::fromFiles($configuration["files"] ?? [], getcwd());
 
         $output->writeln($errors);
 

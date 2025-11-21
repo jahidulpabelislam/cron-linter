@@ -10,8 +10,9 @@ use PHPUnit\Framework\TestCase;
 final class LinterTest extends TestCase {
 
     public function testAll(): void {
-        $linter = new Linter([]);
-        $linter->validateLine("* * * * * php test.php", 1);
-        $this->assertEmpty($linter->getErrors());
+        $errors = Linter::fromContent(
+            "* * * * * php test.php"
+        );
+        $this->assertEmpty($errors);
     }
 }

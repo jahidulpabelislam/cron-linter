@@ -8,35 +8,42 @@ final class Linter
 {
     private array $errors = [];
 
-    public function __construct(private array $files, private string $baseDir = "")
+    public static function fromFiles(array $files, string $baseDir = ""): array
     {
-    }
-
-    public function __invoke(): array
-    {
-        if (empty($this->files)) {
-            return $this->errors;
+        $linter = new Linter();
+        if (empty($files)) {
+            return $linter->errors;
         }
 
-        foreach ($this->files as $filepath) {
-            $filepath = $this->baseDir . "/" . ltrim($filepath, "/");
+        foreach ($files as $filepath) {
+            $filepath = $baseDir . "/" . ltrim($filepath, "/");
             if (!file_exists($filepath)) {
-                $this->errors[] = "Missing cron file: $filepath";
+                $linter->errors[] = "Missing cron file: $filepath";
                 continue;
             }
 
             $lines = explode("\n", file_get_contents($filepath));
             foreach ($lines as $lineNo => $line) {
-                $this->validateLine($line, $lineNo + 1);
+                $linter->validateLine($line, $lineNo + 1);
             }
         }
 
-        return $this->errors;
+        return $linter->errors;
     }
 
-    public function getErrors(): array
+    public static function fromContent(string $content): array
     {
-        return $this->errors;
+        $linter = new Linter();
+        if (empty($content)) {
+            return $linter->errors;
+        }
+
+        $lines = explode("\n", $content);
+        foreach ($lines as $lineNo => $line) {
+            $linter->validateLine($line, $lineNo + 1);
+        }
+
+        return $linter->errors;
     }
 
     public function validateLine(string $line, int $lineNo): void
