@@ -33,6 +33,7 @@ final class CronLinter
 
     public static function lintContent(string $content): array
     {
+        $content = trim($content, "\n ");
         $linter = new static();
         if (empty($content)) {
             return $linter->errors;
