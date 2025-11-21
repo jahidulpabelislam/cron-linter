@@ -41,7 +41,7 @@ final class Linter
             return;
         }
 
-        $prefix = sprintf("Invalid value on line %d for", $lineNo);
+        $prefix = sprintf("Line %d has invalid value for", $lineNo);
 
         $line = str_replace("\t", " ", $line);
         $args = array_values(
