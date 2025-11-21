@@ -88,6 +88,7 @@ final class CronLinter
                 "options" => range(1, 31),
             ],
             "Month" => [
+                "regex" => "/^(\*|\d{1,2}|[a-z]{3})$/i",
                 "values" => $months,
                 "options" => array_merge(
                     range(1, 12),
@@ -95,6 +96,7 @@ final class CronLinter
                 ),
             ],
             "Day of week" => [
+                "regex" => "/^(\*|\d|[a-z]{3})$/i",
                 "values" => $daysOfWeek,
                 "options" => array_merge(
                     range(0, 6),
