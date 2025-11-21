@@ -24,11 +24,17 @@
         "symfony/yaml": "^5.0 || ^6.0 || ^7.0"
     },
     "require-dev": {
-        "jpi/codestyles": "^1.0"
+        "jpi/codestyles": "^1.0",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "JPI\\CronLinter\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JPI\\CronLinter\\Tests\\": "tests/"
         }
     }
 }

@@ -34,7 +34,12 @@ final class Linter
         return $this->errors;
     }
 
-    protected function validateLine(string $line, int $lineNo): void
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    public function validateLine(string $line, int $lineNo): void
     {
         // Skip comment lines or empty lines
         if (empty($line) || str_starts_with($line, '#')) {
