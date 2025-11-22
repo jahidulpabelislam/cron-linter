@@ -112,9 +112,38 @@ final class CronLinter
             $validValues = $data["options"];
             $values = explode(",", $data["values"]);
             foreach ($values as $value) {
-                if (!preg_match($regEx, $value) || ($value !== "*" && !in_array(strtolower($value), $validValues))) {
-                    $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
+                $steppedValues = explode("/", $value);
+                if (count($steppedValues) > 2) {
+                    $this->errors[] = "$errorPrefix {$name}[$offset]: $value - too many steps";
+                    continue;
                 }
+
+                // If stepped, the first value has to be a range or *
+                if (count($steppedValues) === 2 && $steppedValues[0] !== "*") {
+                    $firstValue = $steppedValues[0];
+                    // This is weird, does - indicate a range or is it a negative number?
+                    $rangeValues = !str_starts_with($firstValue, '-') ? explode("-", $firstValue) : [$firstValue];
+                    if (count($rangeValues) !== 2) {
+                        $this->errors[] = "$errorPrefix {$name}[$offset]: $firstValue - wildcard * or range supported only";
+                        $steppedValues = [$steppedValues[1]];
+                    }
+                }
+
+                foreach ($steppedValues as $steppedValue) {
+                    // This is weird, does - indicate a range or is it a negative number?
+                    $rangeValues = !str_starts_with($steppedValue, '-') ? explode("-", $steppedValue) : [$steppedValue];
+                    if (count($rangeValues) > 2) {
+                        $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
+                        continue;
+                    }
+
+                    foreach ($rangeValues as $rangeValue) {
+                        if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
+                            $this->errors[] = "$errorPrefix {$name}[$offset]: $rangeValue";
+                        }
+                    }
+                }
+
                 ++$offset;
             }
         }
