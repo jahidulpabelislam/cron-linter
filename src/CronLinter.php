@@ -16,7 +16,10 @@ final class CronLinter
         }
 
         foreach ($files as $filepath) {
-            $filepath = rtrim($baseDir, "/") . "/" . ltrim($filepath, "/");
+            if ($baseDir !== "") {
+                $filepath = rtrim($baseDir, "/") . "/" . ltrim($filepath, "/");
+            }
+
             if (!file_exists($filepath)) {
                 $linter->errors[] = "Missing cron file: $filepath";
                 continue;
