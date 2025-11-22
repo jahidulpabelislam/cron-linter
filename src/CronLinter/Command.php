@@ -25,7 +25,8 @@ class Command extends BaseCommand
                 InputOption::VALUE_OPTIONAL,
                 "File to read cronlinter config from in yml format",
                 ".cronlinter.yml"
-            );
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

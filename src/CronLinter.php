@@ -54,8 +54,6 @@ final class CronLinter
             return;
         }
 
-        $prefix = "Line $lineNo has invalid value for";
-
         $line = str_replace("\t", " ", $line);
         $args = array_values(
             array_filter(
@@ -71,25 +69,22 @@ final class CronLinter
             return;
         }
 
-        $cmd = implode(" ", array_slice($args, 5));
-        list($minutes, $hours, $daysOfMonth, $months, $daysOfWeek) = array_slice($args, 0, 5);
-
         $checks = [
             "Minute" => [
-                "values" => $minutes,
+                "values" => $args[0],
                 "options" => range(0, 59),
             ],
             "Hour" => [
-                "values" => $hours,
+                "values" => $args[1],
                 "options" => range(0, 23),
             ],
             "Day of month" => [
-                "values" => $daysOfMonth,
+                "values" => $args[2],
                 "options" => range(1, 31),
             ],
             "Month" => [
                 "regex" => "/^(\*|\d{1,2}|[a-z]{3})$/i",
-                "values" => $months,
+                "values" => $args[3],
                 "options" => array_merge(
                     range(1, 12),
                     ["*", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
@@ -97,7 +92,7 @@ final class CronLinter
             ],
             "Day of week" => [
                 "regex" => "/^(\*|\d|[a-z]{3})$/i",
-                "values" => $daysOfWeek,
+                "values" => $args[4],
                 "options" => array_merge(
                     range(0, 6),
                     ["*", "mon", "tue", "wed", "thu", "fri", "sat", "sun"],
@@ -106,6 +101,7 @@ final class CronLinter
         ];
 
         $defaultRegex = "/^(\d{1,2}|\*)$/";
+        $errorPrefix = "Line $lineNo has invalid value for";
 
         foreach ($checks as $name => $data) {
             $offset = 0;
@@ -114,12 +110,13 @@ final class CronLinter
             $values = explode(",", $data["values"]);
             foreach ($values as $value) {
                 if (!preg_match($regEx, $value) || ($value !== "*" && !in_array(strtolower($value), $validValues))) {
-                    $this->errors[] = "$prefix {$name}[$offset]: $value";
+                    $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
                 }
                 ++$offset;
             }
         }
 
+        $cmd = implode(" ", array_slice($args, 5));
         if (preg_match("/^(\d|\*)$/i", (string) (substr($cmd, 0, 1) == "*"))) {
             $this->errors[] = "Line $lineNo has invalid Cmd: $cmd";
         }
