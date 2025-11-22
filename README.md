@@ -24,6 +24,18 @@ files:
 ```
 Then run `php vendor/bin/lintcron`, it should then list any errors found in the specified cron files.
 
+Or if you want to do it programmatically on files or content.
+
+```php
+// $files is an array of file paths for cron's to check, $baseDir (optional) is a string containing the base directory path for all paths
+$errors = \JPI\CronLinter::lintFiles($files, $baseDir);
+
+// $expression is a string containing the cron expression(s)
+$errors = \JPI\CronLinter::lintContent($expression);
+
+// Both return an array of errors found, empty array if no errors found.
+```
+
 ## Support
 
 If you found this library interesting or useful please spread the word about this library: share on your socials, star on GitHub, etc.
