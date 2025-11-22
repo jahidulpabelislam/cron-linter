@@ -27,6 +27,9 @@
         "jpi/codestyles": "^1.0",
         "phpunit/phpunit": "^9.0"
     },
+    "bin": [
+        "bin/lintcron"
+    ],
     "autoload": {
         "psr-4": {
             "JPI\\": "src"
