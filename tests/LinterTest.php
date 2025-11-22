@@ -36,4 +36,31 @@ final class LinterTest extends TestCase {
         ");
         $this->assertEquals([], $errors);
     }
+
+    public function invalidProvider(): array {
+        return [
+            ["-0 * * * * php test.php", "Line 1 has invalid value for Minute[0]: -0"],
+            ["60 * * * * php test.php", "Line 1 has invalid value for Minute[0]: 60"],
+            ["* -1 * * * php test.php", "Line 1 has invalid value for Hour[0]: -1"],
+            ["* 24 * * * php test.php", "Line 1 has invalid value for Hour[0]: 24"],
+            ["* * -2 * * php test.php", "Line 1 has invalid value for Day of month[0]: -2"],
+            ["* * 32 * * php test.php", "Line 1 has invalid value for Day of month[0]: 32"],
+            ["* * * -3 * php test.php", "Line 1 has invalid value for Month[0]: -3"],
+            ["* * * 13 * php test.php", "Line 1 has invalid value for Month[0]: 13"],
+            ["* * * june * php test.php", "Line 1 has invalid value for Month[0]: june"],
+            ["* * * * -4 php test.php", "Line 1 has invalid value for Day of week[0]: -4"],
+            ["* * * * 7 php test.php", "Line 1 has invalid value for Day of week[0]: 7"],
+            ["* * * * thurs php test.php", "Line 1 has invalid value for Day of week[0]: thurs"],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidProvider
+     * @return void
+     */
+    public function testInvalid(string $expression, string $expectedError): void {
+        $errors = CronLinter::lintContent($expression);
+        $this->assertCount(1, $errors);
+        $this->assertEquals($expectedError, $errors[0]);
+    }
 }
