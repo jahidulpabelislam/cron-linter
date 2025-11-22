@@ -11,16 +11,16 @@ Lint cron files. Based on the work of @Dave13h from https://github.com/Dave13h/p
 
 # Installation
 
-```composer require jpi/cron-linter```
+```composer require --dev jpi/cron-linter```
 
 Add `.cronlinter.yml` file to your project root, that provides a list of files to be linted.
 
-# Usage
 ```yml
 files:
   - /cron-1
   - /cron-2
 ```
+Then run `php vendor/bin/lintcron`, it should then list any errors found in the specified cron files.
 
 ## Support
 
