@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace JPI\CronLinter\Tests;
 
 use JPI\CronLinter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class LinterTest extends TestCase {
 
-    public function validProvider(): array {
+    public static function validProvider(): array {
         return [
             ["* * * * * php test.php"],
             ["0 * * * * php test.php"],
@@ -35,16 +36,13 @@ final class LinterTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider validProvider
-     * @return void
-     */
+    #[DataProvider('validProvider')]
     public function testValid(string $expression): void {
         $errors = CronLinter::lintContent($expression);
         $this->assertCount(0, $errors);
     }
 
-    public function invalidProvider(): array {
+    public static function invalidProvider(): array {
         return [
             ["-0 * * * * php test.php", "Line 1 has invalid value for Minute[0]: -0"],
             ["60 * * * * php test.php", "Line 1 has invalid value for Minute[0]: 60"],
@@ -61,10 +59,7 @@ final class LinterTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider invalidProvider
-     * @return void
-     */
+    #[DataProvider('invalidProvider')]
     public function testInvalid(string $expression, string $expectedError): void {
         $errors = CronLinter::lintContent($expression);
         $this->assertCount(1, $errors);
