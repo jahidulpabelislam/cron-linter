@@ -121,8 +121,10 @@ final class CronLinter
                 // If stepped, the first value has to be a range or *
                 if (count($steppedValues) === 2 && $steppedValues[0] !== "*") {
                     $firstValue = $steppedValues[0];
-                    // This is weird, does - indicate a range or is it a negative number?
-                    $rangeValues = !str_starts_with($firstValue, '-') ? explode("-", $firstValue) : [$firstValue];
+                    $rangeValues = array_values(array_filter(explode("-", $firstValue), fn($value) => $value !== ''));
+                    if ($firstValue[0] === "-")  {
+                        $rangeValues[0] = "-" . $rangeValues[0];
+                    }
                     if (count($rangeValues) !== 2) {
                         $this->errors[] = "$errorPrefix {$name}[$offset]: $firstValue - wildcard * or range supported only";
                         $steppedValues = [$steppedValues[1]];
@@ -130,8 +132,10 @@ final class CronLinter
                 }
 
                 foreach ($steppedValues as $steppedValue) {
-                    // This is weird, does - indicate a range or is it a negative number?
-                    $rangeValues = !str_starts_with($steppedValue, '-') ? explode("-", $steppedValue) : [$steppedValue];
+                    $rangeValues = array_values(array_filter(explode("-", $steppedValue), fn($value) => $value !== ''));
+                    if ($steppedValue[0] === "-")  {
+                        $rangeValues[0] = "-" . $rangeValues[0];
+                    }
                     if (count($rangeValues) > 2) {
                         $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
                         continue;
