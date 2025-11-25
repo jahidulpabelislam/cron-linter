@@ -111,10 +111,13 @@ final class CronLinter
             $regEx = $data["regex"] ?? $defaultRegex;
             $validValues = $data["options"];
             $values = explode(",", $data["values"]);
+            $hasMultipleValues = count($values) > 1;
             foreach ($values as $value) {
+                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix {$name}:";
+
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
-                    $this->errors[] = "$errorPrefix {$name}[$offset]: $value - too many steps";
+                    $this->errors[] = "$valueErrorPrefix $value - too many steps";
                     continue;
                 }
 
@@ -126,7 +129,7 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) !== 2) {
-                        $this->errors[] = "$errorPrefix {$name}[$offset]: $firstValue - wildcard * or range supported only";
+                        $this->errors[] = "$valueErrorPrefix $firstValue - wildcard * or range supported only";
                         $steppedValues = [$steppedValues[1]];
                     }
                 }
@@ -137,13 +140,13 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) > 2) {
-                        $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
+                        $this->errors[] = "$valueErrorPrefix $value";
                         continue;
                     }
 
                     foreach ($rangeValues as $rangeValue) {
                         if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
-                            $this->errors[] = "$errorPrefix {$name}[$offset]: $rangeValue";
+                            $this->errors[] = "$valueErrorPrefix $rangeValue";
                         }
                     }
                 }
