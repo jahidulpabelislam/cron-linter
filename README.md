@@ -9,8 +9,6 @@
 
 Lint cron files. Based on the work of @Dave13h from https://github.com/Dave13h/php-censor-cronlint-plugin, just the PHPCensor aspect removed and made into a standalone package.
 
-Currently validates values are valid (`*`, or in the supported range), can handle comma seperated values, handling range of values and stepped values is coming soon.
-
 # Installation
 
 ```composer require --dev jpi/cron-linter```
