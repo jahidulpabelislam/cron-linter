@@ -111,10 +111,46 @@ final class CronLinter
             $regEx = $data["regex"] ?? $defaultRegex;
             $validValues = $data["options"];
             $values = explode(",", $data["values"]);
+            $hasMultipleValues = count($values) > 1;
             foreach ($values as $value) {
-                if (!preg_match($regEx, $value) || ($value !== "*" && !in_array(strtolower($value), $validValues))) {
-                    $this->errors[] = "$errorPrefix {$name}[$offset]: $value";
+                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix {$name}:";
+
+                $steppedValues = explode("/", $value);
+                if (count($steppedValues) > 2) {
+                    $this->errors[] = "$valueErrorPrefix $value - too many steps";
+                    continue;
                 }
+
+                // If stepped, the first value has to be a range or *
+                if (count($steppedValues) === 2 && $steppedValues[0] !== "*") {
+                    $firstValue = $steppedValues[0];
+                    $rangeValues = array_values(array_filter(explode("-", $firstValue), fn($value) => $value !== ''));
+                    if ($firstValue[0] === "-")  {
+                        $rangeValues[0] = "-" . $rangeValues[0];
+                    }
+                    if (count($rangeValues) !== 2) {
+                        $this->errors[] = "$valueErrorPrefix $firstValue - wildcard * or range supported only";
+                        $steppedValues = [$steppedValues[1]];
+                    }
+                }
+
+                foreach ($steppedValues as $steppedValue) {
+                    $rangeValues = array_values(array_filter(explode("-", $steppedValue), fn($value) => $value !== ''));
+                    if ($steppedValue[0] === "-")  {
+                        $rangeValues[0] = "-" . $rangeValues[0];
+                    }
+                    if (count($rangeValues) > 2) {
+                        $this->errors[] = "$valueErrorPrefix $value";
+                        continue;
+                    }
+
+                    foreach ($rangeValues as $rangeValue) {
+                        if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
+                            $this->errors[] = "$valueErrorPrefix $rangeValue";
+                        }
+                    }
+                }
+
                 ++$offset;
             }
         }
