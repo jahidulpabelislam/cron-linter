@@ -57,7 +57,7 @@ final class LinterTest extends TestCase {
         ];
     }
 
-    #[DataProvider('validProvider')]
+    #[DataProvider("validProvider")]
     public function testValid(string $expression): void {
         $errors = CronLinter::lintContent($expression);
         $this->assertCount(0, $errors);
@@ -126,7 +126,7 @@ final class LinterTest extends TestCase {
         ];
     }
 
-    #[DataProvider('invalidProvider')]
+    #[DataProvider("invalidProvider")]
     public function testInvalid(string $expression, array $expectedErrors): void {
         $errors = CronLinter::lintContent($expression);
         $this->assertCount(count($expectedErrors), $errors);

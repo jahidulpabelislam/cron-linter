@@ -124,7 +124,7 @@ final class CronLinter
                 // If stepped, the first value has to be a range or *
                 if (count($steppedValues) === 2 && $steppedValues[0] !== "*") {
                     $firstValue = $steppedValues[0];
-                    $rangeValues = array_values(array_filter(explode("-", $firstValue), fn($value) => $value !== ''));
+                    $rangeValues = array_values(array_filter(explode("-", $firstValue), fn($value) => $value !== ""));
                     if ($firstValue[0] === "-")  {
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
@@ -135,7 +135,7 @@ final class CronLinter
                 }
 
                 foreach ($steppedValues as $steppedValue) {
-                    $rangeValues = array_values(array_filter(explode("-", $steppedValue), fn($value) => $value !== ''));
+                    $rangeValues = array_values(array_filter(explode("-", $steppedValue), fn($value) => $value !== ""));
                     if ($steppedValue[0] === "-")  {
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
