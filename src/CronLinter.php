@@ -144,9 +144,25 @@ final class CronLinter
                         continue;
                     }
 
+                    $hasInvalidValue = false;
                     foreach ($rangeValues as $rangeValue) {
                         if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
                             $this->errors[] = "$valueErrorPrefix $rangeValue";
+                            $hasInvalidValue = true;
+                        }
+                    }
+
+                    // Check if range is ordered (only if both values are valid)
+                    if (!$hasInvalidValue && count($rangeValues) === 2) {
+                        $start = $rangeValues[0];
+                        $end = $rangeValues[1];
+                        
+                        // Convert month/day names to numbers for comparison
+                        $startValue = is_numeric($start) ? (int)$start : array_search(strtolower($start), $validValues);
+                        $endValue = is_numeric($end) ? (int)$end : array_search(strtolower($end), $validValues);
+                        
+                        if ($startValue !== false && $endValue !== false && $startValue > $endValue) {
+                            $this->errors[] = "$valueErrorPrefix $steppedValue - range is backwards";
                         }
                     }
                 }
