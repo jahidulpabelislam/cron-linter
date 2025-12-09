@@ -158,8 +158,8 @@ final class CronLinter
                         $end = $rangeValues[1];
                         
                         // Convert to numeric values for comparison
-                        $startValue = $this->convertToNumericValue($start, $validValues);
-                        $endValue = $this->convertToNumericValue($end, $validValues);
+                        $startValue = $this->convertToNumericValue($start);
+                        $endValue = $this->convertToNumericValue($end);
                         
                         if ($startValue !== null && $endValue !== null && $startValue > $endValue) {
                             $this->errors[] = "$valueErrorPrefix $steppedValue - range is backwards";
@@ -181,10 +181,9 @@ final class CronLinter
      * Convert a cron value to its numeric representation for comparison.
      * 
      * @param string $value The value to convert (e.g., "10", "jan", "mon")
-     * @param array $validValues The array of valid values for this field
      * @return int|null The numeric value, or null if conversion fails
      */
-    private function convertToNumericValue(string $value, array $validValues): ?int
+    private function convertToNumericValue(string $value): ?int
     {
         if (is_numeric($value)) {
             return (int)$value;
