@@ -157,11 +157,11 @@ final class CronLinter
                         $start = $rangeValues[0];
                         $end = $rangeValues[1];
                         
-                        // Convert month/day names to numbers for comparison
-                        $startValue = is_numeric($start) ? (int)$start : array_search(strtolower($start), $validValues);
-                        $endValue = is_numeric($end) ? (int)$end : array_search(strtolower($end), $validValues);
+                        // Convert to numeric values for comparison
+                        $startValue = $this->convertToNumericValue($start, $validValues);
+                        $endValue = $this->convertToNumericValue($end, $validValues);
                         
-                        if ($startValue !== false && $endValue !== false && $startValue > $endValue) {
+                        if ($startValue !== null && $endValue !== null && $startValue > $endValue) {
                             $this->errors[] = "$valueErrorPrefix $steppedValue - range is backwards";
                         }
                     }
@@ -175,5 +175,31 @@ final class CronLinter
         if (preg_match("/^(\d|\*)$/i", (string) (substr($cmd, 0, 1) == "*"))) {
             $this->errors[] = "Line $lineNo has invalid Cmd: $cmd";
         }
+    }
+
+    private function convertToNumericValue(string $value, array $validValues): ?int
+    {
+        if (is_numeric($value)) {
+            return (int)$value;
+        }
+
+        // Map month names to their numeric values (jan=1, feb=2, etc.)
+        $monthNames = ["jan" => 1, "feb" => 2, "mar" => 3, "apr" => 4, "may" => 5, "jun" => 6, 
+                       "jul" => 7, "aug" => 8, "sep" => 9, "oct" => 10, "nov" => 11, "dec" => 12];
+        
+        // Map day names to their numeric values (mon=1, tue=2, etc., sun=0)
+        $dayNames = ["mon" => 1, "tue" => 2, "wed" => 3, "thu" => 4, "fri" => 5, "sat" => 6, "sun" => 0];
+        
+        $lowerValue = strtolower($value);
+        
+        if (isset($monthNames[$lowerValue])) {
+            return $monthNames[$lowerValue];
+        }
+        
+        if (isset($dayNames[$lowerValue])) {
+            return $dayNames[$lowerValue];
+        }
+        
+        return null;
     }
 }
