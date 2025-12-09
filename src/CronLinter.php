@@ -177,6 +177,13 @@ final class CronLinter
         }
     }
 
+    /**
+     * Convert a cron value to its numeric representation for comparison.
+     * 
+     * @param string $value The value to convert (e.g., "10", "jan", "mon")
+     * @param array $validValues The array of valid values for this field
+     * @return int|null The numeric value, or null if conversion fails
+     */
     private function convertToNumericValue(string $value, array $validValues): ?int
     {
         if (is_numeric($value)) {
@@ -184,11 +191,17 @@ final class CronLinter
         }
 
         // Map month names to their numeric values (jan=1, feb=2, etc.)
-        $monthNames = ["jan" => 1, "feb" => 2, "mar" => 3, "apr" => 4, "may" => 5, "jun" => 6, 
-                       "jul" => 7, "aug" => 8, "sep" => 9, "oct" => 10, "nov" => 11, "dec" => 12];
+        $monthNames = [
+            "jan" => 1, "feb" => 2, "mar" => 3, "apr" => 4,
+            "may" => 5, "jun" => 6, "jul" => 7, "aug" => 8,
+            "sep" => 9, "oct" => 10, "nov" => 11, "dec" => 12,
+        ];
         
         // Map day names to their numeric values (mon=1, tue=2, etc., sun=0)
-        $dayNames = ["mon" => 1, "tue" => 2, "wed" => 3, "thu" => 4, "fri" => 5, "sat" => 6, "sun" => 0];
+        $dayNames = [
+            "mon" => 1, "tue" => 2, "wed" => 3, "thu" => 4,
+            "fri" => 5, "sat" => 6, "sun" => 0,
+        ];
         
         $lowerValue = strtolower($value);
         
