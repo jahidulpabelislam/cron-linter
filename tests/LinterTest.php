@@ -45,6 +45,8 @@ final class LinterTest extends TestCase {
             ["* * * 6-12/2 * php test.php"],
             ["* * * feb * php test.php"],
             ["* * * JUN * php test.php"],
+            ["* * * dec-jan * php test.php"],
+            ["* * * mar-feb * php test.php"],
 
             ["* * * * 0 php test.php"],
             ["* * * * 6 php test.php"],
@@ -54,6 +56,7 @@ final class LinterTest extends TestCase {
             ["* * * * 1-5/4 php test.php"],
             ["* * * * fri php test.php"],
             ["* * * * TuE php test.php"],
+            ["* * * * fri-mon php test.php"],
         ];
     }
 
@@ -120,8 +123,6 @@ final class LinterTest extends TestCase {
             ["* * * 8/12/16 * php test.php", ["Line 1 has invalid value for Month: 8/12/16 - too many steps"]],
             ["* * * june * php test.php", ["Line 1 has invalid value for Month: june"]],
             ["* * * 12-1 * php test.php", ["Line 1 has invalid value for Month: 12-1 - values must be ordered"]],
-            ["* * * dec-jan * php test.php", ["Line 1 has invalid value for Month: dec-jan - values must be ordered"]],
-            ["* * * mar-feb * php test.php", ["Line 1 has invalid value for Month: mar-feb - values must be ordered"]],
 
             ["* * * * -4 php test.php", ["Line 1 has invalid value for Day of week: -4"]],
             ["* * * * -3-5 php test.php", ["Line 1 has invalid value for Day of week: -3"]],
@@ -136,7 +137,6 @@ final class LinterTest extends TestCase {
             ["* * * * thurs php test.php", ["Line 1 has invalid value for Day of week: thurs"]],
             ["* * * * 6-0 php test.php", ["Line 1 has invalid value for Day of week: 6-0 - values must be ordered"]],
             ["* * * * 5-2 php test.php", ["Line 1 has invalid value for Day of week: 5-2 - values must be ordered"]],
-            ["* * * * fri-mon php test.php", ["Line 1 has invalid value for Day of week: fri-mon - values must be ordered"]],
         ];
     }
 
