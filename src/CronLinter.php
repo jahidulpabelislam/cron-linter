@@ -162,7 +162,7 @@ final class CronLinter
                         $endValue = $this->convertToNumericValue($end);
                         
                         if ($startValue !== null && $endValue !== null && $startValue > $endValue) {
-                            $this->errors[] = "$valueErrorPrefix $steppedValue - range is backwards";
+                            $this->errors[] = "$valueErrorPrefix $steppedValue - values must be ordered";
                         }
                     }
                 }
