@@ -144,9 +144,25 @@ final class CronLinter
                         continue;
                     }
 
+                    $hasInvalidValue = false;
                     foreach ($rangeValues as $rangeValue) {
                         if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
                             $this->errors[] = "$valueErrorPrefix $rangeValue";
+                            $hasInvalidValue = true;
+                        }
+                    }
+
+                    if (!$hasInvalidValue && count($rangeValues) === 2) {
+                        $numericalValues = array_filter($rangeValues, "is_numeric");
+                        if (count($numericalValues) === 2) {
+                            $sorted = $rangeValues;
+                            sort($sorted);
+                            if ($sorted !== $rangeValues) {
+                                $this->errors[] = "$valueErrorPrefix $steppedValue - values must be ordered";
+                            }
+                        } else {
+                            $badValues = array_diff($rangeValues, $numericalValues);
+                            $this->errors[] = "$valueErrorPrefix " . implode("-", $badValues) . " - values in range must be numeric";
                         }
                     }
                 }
