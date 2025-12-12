@@ -152,19 +152,17 @@ final class CronLinter
                         }
                     }
 
-                    // Check if range is ordered (only if both values are valid and numeric)
                     if (!$hasInvalidValue && count($rangeValues) === 2) {
-                        $start = $rangeValues[0];
-                        $end = $rangeValues[1];
-                        
-                        // Only check ordering for numeric values
-                        if (is_numeric($start) && is_numeric($end)) {
-                            $startValue = (int)$start;
-                            $endValue = (int)$end;
-                            
-                            if ($startValue > $endValue) {
+                        $numericalValues = array_filter($rangeValues, "is_numeric");
+                        if (count($numericalValues) === 2) {
+                            $sorted = $rangeValues;
+                            sort($sorted);
+                            if ($sorted !== $rangeValues) {
                                 $this->errors[] = "$valueErrorPrefix $steppedValue - values must be ordered";
                             }
+                        } else {
+                            $badValues = array_diff($rangeValues, $numericalValues);
+                            $this->errors[] = "$valueErrorPrefix " . implode("-", $badValues) . " - values in range must be numeric";
                         }
                     }
                 }
@@ -178,6 +176,4 @@ final class CronLinter
             $this->errors[] = "Line $lineNo has invalid Cmd: $cmd";
         }
     }
-
-
 }
