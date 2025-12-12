@@ -25,6 +25,12 @@ class Command extends BaseCommand
                 InputOption::VALUE_OPTIONAL,
                 "File to read cronlinter config from in yml format"
             )
+            ->addOption(
+                "files",
+                null,
+                InputOption::VALUE_OPTIONAL,
+                "Comma seperated list of cron files to check"
+            )
         ;
     }
 
@@ -32,19 +38,26 @@ class Command extends BaseCommand
     {
         $baseDir = getcwd();
 
-        $configFile = $input->getOption("config-file");
+        $files = $input->getOption("files");
+        if (!$files) {
+            $configFile = $input->getOption("config-file");
 
-        if (!$configFile) {
-            $configFile = "$baseDir/.cronlinter.yml";
+            if (!$configFile) {
+                $configFile = "$baseDir/.cronlinter.yml";
+            }
+
+            try {
+                $configuration = Yaml::parseFile($configFile);
+            } catch (ParseException) {
+                $configuration = [];
+            }
+
+            $files = $configuration["files"] ?? [];
+        } else {
+            $files = explode(",", $files);
         }
 
-        try {
-            $configuration = Yaml::parseFile($configFile);
-        } catch (ParseException) {
-            $configuration = [];
-        }
-
-        $errors = CronLinter::lintFiles($configuration["files"] ?? [], $baseDir);
+        $errors = CronLinter::lintFiles($files, $baseDir);
 
         $output->writeln($errors);
 
