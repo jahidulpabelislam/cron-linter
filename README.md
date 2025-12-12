@@ -20,7 +20,9 @@ files:
   - /cron-1
   - /cron-2
 ```
-Then run `php vendor/bin/lintcron`, it should then list any errors found in the specified cron files.
+Then run `php vendor/bin/lintcron`, it should then list any errors found in the specified cron files. You can have different config file location using the `--config` option.
+
+You can also specify files to be linted using the `--files` option, providing a comma separated list of file paths.
 
 Or if you want to do it programmatically on files or content.
 
