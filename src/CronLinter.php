@@ -142,7 +142,7 @@ final class CronLinter
                     }
                     if (count($rangeValues) > 2) {
                         $rangeErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
-                        $this->errors[] = "Line $lineNo has too many values in the range for $rangeErrorName: $steppedValue";
+                        $this->errors[] = "Line $lineNo has too many values for the range for $rangeErrorName: $steppedValue";
                         continue;
                     }
 
