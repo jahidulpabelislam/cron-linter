@@ -129,7 +129,7 @@ final class CronLinter
                     if ($firstValue[0] === "-")  {
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
-                    if (count($rangeValues) !== 2) {
+                    if (count($rangeValues) < 2) {
                         $this->errors[] = "$valueErrorPrefix $firstValue (only wildcard * or range supported)";
                         $steppedValues = [$steppedValues[1]];
                     }
