@@ -113,11 +113,12 @@ final class CronLinter
             $values = explode(",", $data["values"]);
             $hasMultipleValues = count($values) > 1;
             foreach ($values as $value) {
-                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix {$name}:";
+                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix $name:";
 
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
-                    $this->errors[] = "$valueErrorPrefix $value - too many steps";
+                    $stepsErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
+                    $this->errors[] = "Line $lineNo has too many step values for $stepsErrorName: $value";
                     continue;
                 }
 
@@ -128,8 +129,8 @@ final class CronLinter
                     if ($firstValue[0] === "-")  {
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
-                    if (count($rangeValues) !== 2) {
-                        $this->errors[] = "$valueErrorPrefix $firstValue - wildcard * or range supported only";
+                    if (count($rangeValues) < 2) {
+                        $this->errors[] = "$valueErrorPrefix $firstValue (only wildcard * or range supported)";
                         $steppedValues = [$steppedValues[1]];
                     }
                 }
@@ -140,7 +141,8 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) > 2) {
-                        $this->errors[] = "$valueErrorPrefix $value";
+                        $rangeErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
+                        $this->errors[] = "Line $lineNo has too many values for the range for $rangeErrorName: $steppedValue";
                         continue;
                     }
 
