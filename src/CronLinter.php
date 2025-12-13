@@ -113,7 +113,7 @@ final class CronLinter
             $values = explode(",", $data["values"]);
             $hasMultipleValues = count($values) > 1;
             foreach ($values as $value) {
-                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix {$name}:";
+                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix $name:";
 
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
@@ -140,7 +140,8 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) > 2) {
-                        $this->errors[] = "$valueErrorPrefix $value";
+                        $rangeErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
+                        $this->errors[] = "Line $lineNo has too many values in range for $rangeErrorName: $value";
                         continue;
                     }
 
