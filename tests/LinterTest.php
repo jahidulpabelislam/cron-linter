@@ -128,6 +128,8 @@ final class LinterTest extends TestCase {
             ["* * * * 8/2 php test.php", ["Line 1 has invalid value for Day of week: 8 (only wildcard * or range supported)"]],
             ["* * * * 3/6/9 php test.php", ["Line 1 has too many step values for Day of week: 3/6/9"]],
             ["* * * * thurs php test.php", ["Line 1 has invalid value for Day of week: thurs"]],
+
+            ["* * * 18 45 php test.php", ["Line 1 has invalid value for Month: 18", "Line 1 has invalid value for Day of week: 45"]],
         ];
     }
 
