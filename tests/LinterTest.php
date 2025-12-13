@@ -77,6 +77,7 @@ final class LinterTest extends TestCase {
             ["61-62/2 * * * * php test.php", ["Line 1 has invalid value for Minute: 61", "Line 1 has invalid value for Minute: 62"]],
             ["1/2 * * * * php test.php", ["Line 1 has invalid value for Minute: 1 (only wildcard * or range supported)"]],
             ["*/1/2 * * * * php test.php", ["Line 1 has too many step values for Minute: */1/2"]],
+            ["2-4-6/2/1 * * * * php test.php", ["Line 1 has too many step values for Minute: 2-4-6/2/1"]],
 
             ["* -1 * * * php test.php", ["Line 1 has invalid value for Hour: -1"]],
             ["* -1-23 * * * php test.php", ["Line 1 has invalid value for Hour: -1"]],
