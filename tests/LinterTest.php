@@ -78,6 +78,9 @@ final class LinterTest extends TestCase {
             ["1/2 * * * * php test.php", ["Line 1 has invalid value for Minute: 1 (only wildcard * or range supported)"]],
             ["*/1/2 * * * * php test.php", ["Line 1 has too many step values for Minute: */1/2"]],
             ["2-4-6/2/1 * * * * php test.php", ["Line 1 has too many step values for Minute: 2-4-6/2/1"]],
+            ["10-9 * * * * php test.php", ["Line 1 has invalid value for Minute: 10-9 - values must be ordered"]],
+            ["59-0 * * * * php test.php", ["Line 1 has invalid value for Minute: 59-0 - values must be ordered"]],
+            ["10-9/2 * * * * php test.php", ["Line 1 has invalid value for Minute: 10-9 - values must be ordered"]],
 
             ["* -1 * * * php test.php", ["Line 1 has invalid value for Hour: -1"]],
             ["* -1-23 * * * php test.php", ["Line 1 has invalid value for Hour: -1"]],
@@ -90,6 +93,8 @@ final class LinterTest extends TestCase {
             ["* 24-26/2 * * * php test.php", ["Line 1 has invalid value for Hour: 24","Line 1 has invalid value for Hour: 26"]],
             ["* 1/2 * * * php test.php", ["Line 1 has invalid value for Hour: 1 (only wildcard * or range supported)"]],
             ["* 1/2/3 * * * php test.php", ["Line 1 has too many step values for Hour: 1/2/3"]],
+            ["* 23-0 * * * php test.php", ["Line 1 has invalid value for Hour: 23-0 - values must be ordered"]],
+            ["* 12-5 * * * php test.php", ["Line 1 has invalid value for Hour: 12-5 - values must be ordered"]],
 
             ["* * -2 * * php test.php", ["Line 1 has invalid value for Day of month: -2"]],
             ["* * -2-14 * * php test.php", ["Line 1 has invalid value for Day of month: -2"]],
@@ -103,6 +108,8 @@ final class LinterTest extends TestCase {
             ["* * 32-35/2 * * php test.php", ["Line 1 has invalid value for Day of month: 32", "Line 1 has invalid value for Day of month: 35"]],
             ["* * 7/14 * * php test.php", ["Line 1 has invalid value for Day of month: 7 (only wildcard * or range supported)"]],
             ["* * 7/14/28 * * php test.php", ["Line 1 has too many step values for Day of month: 7/14/28"]],
+            ["* * 31-1 * * php test.php", ["Line 1 has invalid value for Day of month: 31-1 - values must be ordered"]],
+            ["* * 15-10 * * php test.php", ["Line 1 has invalid value for Day of month: 15-10 - values must be ordered"]],
 
             ["* * * -3 * php test.php", ["Line 1 has invalid value for Month: -3"]],
             ["* * * -3-12 * php test.php", ["Line 1 has invalid value for Month: -3"]],
@@ -133,6 +140,9 @@ final class LinterTest extends TestCase {
             ["* * * * 8/2 php test.php", ["Line 1 has invalid value for Day of week: 8 (only wildcard * or range supported)"]],
             ["* * * * 3/6/9 php test.php", ["Line 1 has too many step values for Day of week: 3/6/9"]],
             ["* * * * thurs php test.php", ["Line 1 has invalid value for Day of week: thurs"]],
+            ["* * * * 6-0 php test.php", ["Line 1 has invalid value for Day of week: 6-0 - values must be ordered"]],
+            ["* * * * 5-2 php test.php", ["Line 1 has invalid value for Day of week: 5-2 - values must be ordered"]],
+            ["* * * * fri-mon php test.php", ["Line 1 has invalid value for Day of week: fri-mon - values in range must be numeric"]],
 
             ["* * * 18 45 php test.php", ["Line 1 has invalid value for Month: 18", "Line 1 has invalid value for Day of week: 45"]],
         ];
