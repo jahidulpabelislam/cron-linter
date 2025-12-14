@@ -144,6 +144,7 @@ final class LinterTest extends TestCase {
             ["* * * * thurs php test.php", ["Line 1 contains an invalid value for Day of week: thurs"]],
             ["* * * * 6-0 php test.php", ["Line 1 contains an invalid range for Day of week: 6-0 (must be in ascending order)"]],
             ["* * * * 5-2 php test.php", ["Line 1 contains an invalid range for Day of week: 5-2 (must be in ascending order)"]],
+            ["* * * * 0-mon php test.php", ["Line 1 contains an invalid range for Day of week: 0-mon (must be numeric)"]],
             ["* * * * fri-mon php test.php", ["Line 1 contains an invalid range for Day of week: fri-mon (must be numeric)"]],
 
             ["* * * 18 45 php test.php", ["Line 1 contains an invalid value for Month: 18", "Line 1 contains an invalid value for Day of week: 45"]],
