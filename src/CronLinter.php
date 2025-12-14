@@ -104,7 +104,7 @@ final class CronLinter
         ];
 
         $defaultRegex = "/^(\d{1,2}|\*)$/";
-        $errorPrefix = "Line $lineNo has invalid value for";
+        $errorPrefix = "Line $lineNo contains an invalid value for";
 
         foreach ($checks as $name => $data) {
             $offset = 0;
@@ -115,12 +115,12 @@ final class CronLinter
             foreach ($values as $value) {
                 $errorIndex = $hasMultipleValues ? "{$name}[$offset]" : $name;
                 $valueErrorPrefix = "$errorPrefix $errorIndex:";
-                $rangeErrorPrefix = "Line $lineNo has invalid range for $errorIndex:";
+                $rangeErrorPrefix = "Line $lineNo contains an invalid range for $errorIndex:";
 
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
                     $stepsErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
-                    $this->errors[] = "Line $lineNo has too many step values for $stepsErrorName: $value";
+                    $this->errors[] = "Line $lineNo contains too many step values for $stepsErrorName: $value";
                     continue;
                 }
 
@@ -132,7 +132,7 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) < 2) {
-                        $this->errors[] = "$valueErrorPrefix $firstValue (only wildcard * or range supported)";
+                        $this->errors[] = "$valueErrorPrefix $firstValue (must be wildcard `*` or a range)";
                         $steppedValues = [$steppedValues[1]];
                     }
                 }
@@ -161,11 +161,11 @@ final class CronLinter
                             $sorted = $rangeValues;
                             sort($sorted);
                             if ($sorted !== $rangeValues) {
-                                $this->errors[] = "$rangeErrorPrefix $steppedValue (values must be ordered)";
+                                $this->errors[] = "$rangeErrorPrefix $steppedValue (must be in ascending order)";
                             }
                         } else {
                             $badValues = implode("-", array_diff($rangeValues, $numericalValues));
-                            $this->errors[] = "$rangeErrorPrefix $badValues (values must be numeric)";
+                            $this->errors[] = "$rangeErrorPrefix $badValues (must be numeric)";
                         }
                     }
                 }
