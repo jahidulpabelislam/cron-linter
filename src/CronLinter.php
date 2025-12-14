@@ -163,8 +163,8 @@ final class CronLinter
                                 $this->errors[] = "Line $lineNo has invalid range for $rangeErrorName: $steppedValue (values must be ordered)";
                             }
                         } else {
-                            $badValues = array_diff($rangeValues, $numericalValues);
-                            $this->errors[] = "Line $lineNo has invalid range for $rangeErrorName: " . implode("-", $badValues) . " (values in range must be numeric)";
+                            $badValues = implode("-", array_diff($rangeValues, $numericalValues));
+                            $this->errors[] = "Line $lineNo has invalid range for $rangeErrorName: $badValues (values in range must be numeric)";
                         }
                     }
                 }
