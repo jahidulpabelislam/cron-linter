@@ -113,8 +113,9 @@ final class CronLinter
             $values = explode(",", $data["values"]);
             $hasMultipleValues = count($values) > 1;
             foreach ($values as $value) {
-                $valueErrorPrefix = $hasMultipleValues ? "$errorPrefix {$name}[$offset]:" : "$errorPrefix $name:";
-                $rangeErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
+                $errorIndex = $hasMultipleValues ? "{$name}[$offset]" : $name;
+                $valueErrorPrefix = "$errorPrefix $errorIndex:";
+                $rangeErrorPrefix = "Line $lineNo has invalid range for $errorIndex:";
 
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
@@ -142,7 +143,7 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) > 2) {
-                        $this->errors[] = "Line $lineNo has too many values for the range for $rangeErrorName: $steppedValue";
+                        $this->errors[] = "$rangeErrorPrefix $steppedValue (too many values)";
                         continue;
                     }
 
@@ -160,11 +161,11 @@ final class CronLinter
                             $sorted = $rangeValues;
                             sort($sorted);
                             if ($sorted !== $rangeValues) {
-                                $this->errors[] = "Line $lineNo has invalid range for $rangeErrorName: $steppedValue (values must be ordered)";
+                                $this->errors[] = "$rangeErrorPrefix $steppedValue (values must be ordered)";
                             }
                         } else {
                             $badValues = implode("-", array_diff($rangeValues, $numericalValues));
-                            $this->errors[] = "Line $lineNo has invalid range for $rangeErrorName: $badValues (values in range must be numeric)";
+                            $this->errors[] = "$rangeErrorPrefix $badValues (values must be numeric)";
                         }
                     }
                 }
