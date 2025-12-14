@@ -164,8 +164,7 @@ final class CronLinter
                                 $this->errors[] = "$rangeErrorPrefix $steppedValue (must be in ascending order)";
                             }
                         } else {
-                            $badValues = implode("-", array_diff($rangeValues, $numericalValues));
-                            $this->errors[] = "$rangeErrorPrefix $badValues (must be numeric)";
+                            $this->errors[] = "$rangeErrorPrefix $steppedValue (must be numeric)";
                         }
                     }
                 }
