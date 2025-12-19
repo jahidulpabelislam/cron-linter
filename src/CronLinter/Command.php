@@ -32,7 +32,7 @@ class Command extends BaseCommand
                 "files",
                 null,
                 InputOption::VALUE_OPTIONAL,
-                "Comma seperated list of cron files to check"
+                "Comma separated list of cron files to check"
             )
         ;
     }
