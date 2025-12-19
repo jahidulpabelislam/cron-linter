@@ -10,10 +10,6 @@ final class CronLinter
 
     /**
      * Lint multiple cron files.
-     *
-     * @param array<string> $files Array of file paths to lint
-     * @param string $baseDir Optional base directory path to prepend to relative file paths
-     * @return array<string> Array of error messages found, empty if no errors
      */
     public static function lintFiles(array $files, string $baseDir = ""): array
     {
@@ -43,9 +39,6 @@ final class CronLinter
 
     /**
      * Lint cron content directly from a string.
-     *
-     * @param string $content String containing cron expressions (one per line)
-     * @return array<string> Array of error messages found, empty if no errors
      */
     public static function lintContent(string $content): array
     {
@@ -65,10 +58,6 @@ final class CronLinter
 
     /**
      * Validate a single cron line.
-     *
-     * @param string $line The cron line to validate
-     * @param int $lineNo The line number (for error reporting)
-     * @return void
      */
     public function validateLine(string $line, int $lineNo): void
     {

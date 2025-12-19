@@ -39,10 +39,6 @@ class Command extends BaseCommand
 
     /**
      * Execute the cron linting command.
-     *
-     * @param InputInterface $input The input interface
-     * @param OutputInterface $output The output interface
-     * @return int The exit code (SUCCESS or FAILURE)
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

@@ -52,6 +52,6 @@ If you find any issues or have any feature requests, you can open a [issue](http
 
 -   [Jahidul Pabel Islam](https://jahidulpabelislam.com/) [<me@jahidulpabelislam.com>](mailto:me@jahidulpabelislam.com)
 
-## License
+## Licence
 
-This module is licensed under the GNU General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details
+This module is licenced under the GNU General Public Licence v3.0 - see the [LICENSE.md](LICENSE.md) file for details
