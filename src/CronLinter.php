@@ -68,6 +68,7 @@ final class CronLinter
      *
      * @param string $line The cron line to validate
      * @param int $lineNo The line number (for error reporting)
+     * @return void
      */
     public function validateLine(string $line, int $lineNo): void
     {
