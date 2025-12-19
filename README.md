@@ -54,4 +54,4 @@ If you find any issues or have any feature requests, you can open a [issue](http
 
 ## Licence
 
-This module is licenced under the GNU General Public Licence v3.0 - see the [LICENSE.md](LICENSE.md) file for details
+This module is licenced under the GNU General Public Licence v3.0 - see the [licence](LICENSE.md) file for details
