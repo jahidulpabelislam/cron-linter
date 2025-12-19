@@ -14,9 +14,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class Command extends BaseCommand
 {
-    /**
-     * Configure the command options and description.
-     */
     protected function configure(): void
     {
         $this
@@ -37,9 +34,6 @@ class Command extends BaseCommand
         ;
     }
 
-    /**
-     * Execute the cron linting command.
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $baseDir = getcwd();

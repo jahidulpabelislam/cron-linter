@@ -8,9 +8,6 @@ final class CronLinter
 {
     private array $errors = [];
 
-    /**
-     * Lint multiple cron files.
-     */
     public static function lintFiles(array $files, string $baseDir = ""): array
     {
         $linter = new static();
@@ -37,9 +34,6 @@ final class CronLinter
         return $linter->errors;
     }
 
-    /**
-     * Lint cron content directly from a string.
-     */
     public static function lintContent(string $content): array
     {
         $content = trim($content, "\n ");
@@ -56,9 +50,6 @@ final class CronLinter
         return $linter->errors;
     }
 
-    /**
-     * Validate a single cron line.
-     */
     public function validateLine(string $line, int $lineNo): void
     {
         // Skip comment lines or empty lines
