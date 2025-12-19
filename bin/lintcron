@@ -6,11 +6,9 @@ declare(strict_types=1);
 use JPI\CronLinter\Command;
 use Symfony\Component\Console\Application;
 
-// Attempt to load Composer autoloader from multiple locations
-// This supports both local development and when installed as a dependency
 $paths = [
-    "local" => __DIR__ . "/../vendor/autoload.php",        // Local development
-    "dependency" => __DIR__ . "/../../../autoload.php",     // Installed as a dependency
+    "local" => __DIR__ . "/../vendor/autoload.php",
+    "dependency" => __DIR__ . "/../../../autoload.php",
 ];
 
 $isDependency = false;
