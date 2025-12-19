@@ -11,29 +11,35 @@ Lint cron files. Based on the work of @Dave13h from https://github.com/Dave13h/p
 
 # Installation
 
-```composer require --dev jpi/cron-linter```
+```bash
+composer require --dev jpi/cron-linter
+```
 
-Add `.cronlinter.yml` file to your project root, that provides a list of files to be linted.
+Add a `.cronlinter.yml` file to your project root that specifies a list of cron files to lint.
 
 ```yml
 files:
   - /cron-1
   - /cron-2
 ```
-Then run `php vendor/bin/lintcron`, it should then list any errors found in the specified cron files. You can have different config file location using the `--config` option.
 
-You can also specify files to be linted using the `--files` option, providing a comma separated list of file paths.
+Then run `php vendor/bin/lintcron`, which will list any errors found in the specified cron files. You can use a different config file location using the `--config-file` option.
+
+You can also specify files to be linted using the `--files` option, providing a comma-separated list of file paths.
 
 Or if you want to do it programmatically on files or content.
 
 ```php
-// $files is an array of file paths for cron's to check, $baseDir (optional) is a string containing the base directory path for all paths
+// Lint cron files
+// $files is an array of file paths for cron files to check
+// $baseDir (optional) is a string containing the base directory path for all file paths
 $errors = \JPI\CronLinter::lintFiles($files, $baseDir);
 
-// $expression is a string containing the cron expression(s)
+// Lint cron content directly
+// $expression is a string containing one or more cron expressions (one per line)
 $errors = \JPI\CronLinter::lintContent($expression);
 
-// Both return an array of errors found, empty array if no errors found.
+// Both methods return an array of error messages, or an empty array if no errors found
 ```
 
 ## Support
@@ -48,4 +54,4 @@ If you find any issues or have any feature requests, you can open a [issue](http
 
 ## Licence
 
-This module is licenced under the General Public Licence - see the [licence](LICENSE.md) file for details
+This module is licenced under the GNU General Public Licence - see the [licence](LICENSE.md) file for details
