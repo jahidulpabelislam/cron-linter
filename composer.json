@@ -1,6 +1,6 @@
 {
     "name": "jpi/cron-linter",
-    "description": "Cron Linting",
+    "description": "Cron Linting Tool",
     "license": "GPL-3.0-only",
     "type": "library",
     "authors": [
