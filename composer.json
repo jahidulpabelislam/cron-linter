@@ -1,6 +1,6 @@
 {
     "name": "jpi/cron-linter",
-    "description": "Cron Linting Tool",
+    "description": "Tool for linting cron files and expressions",
     "license": "GPL-3.0-only",
     "type": "library",
     "authors": [
