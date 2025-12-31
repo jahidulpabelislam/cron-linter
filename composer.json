@@ -1,6 +1,6 @@
 {
     "name": "jpi/cron-linter",
-    "description": "Cron Linting Tool",
+    "description": "A PHP library and CLI tool for linting and validating cron files and cron expressions",
     "license": "GPL-3.0-only",
     "type": "library",
     "authors": [
