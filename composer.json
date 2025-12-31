@@ -10,13 +10,14 @@
         }
     ],
     "keywords": [
-        "php",
-        "testing",
-        "open-source",
         "ci",
+        "cli",
         "continuous integration",
         "cron",
-        "lint"
+        "lint",
+        "linting",
+        "testing",
+        "tool"
     ],
     "require": {
         "php": "^8.0",
