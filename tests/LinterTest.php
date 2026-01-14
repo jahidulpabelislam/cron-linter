@@ -8,6 +8,9 @@ use JPI\CronLinter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \JPI\CronLinter
+ */
 final class LinterTest extends TestCase {
 
     public static function validProvider(): array {
