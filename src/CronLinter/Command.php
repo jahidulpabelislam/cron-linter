@@ -54,8 +54,13 @@ class Command extends BaseCommand
 
             $files = $configuration["files"] ?? [];
         } else {
-            $files = array_filter(explode(",", $input->getOption("files") ?: ""));
+            $files = explode(",", $input->getOption("files") ?: "");
         }
+
+        $files = array_values(array_filter(array_map(
+            static fn (mixed $file): string => trim((string) $file),
+            (array) $files
+        )));
 
         $errors = CronLinter::lintFiles($files, $baseDir);
 
