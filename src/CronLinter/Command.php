@@ -59,7 +59,11 @@ class Command extends BaseCommand
 
         $errors = CronLinter::lintFiles($files, $baseDir);
 
-        $output->writeln($errors);
+        if (!empty($errors)) {
+            $output->writeln($errors);
+        } else {
+            $output->writeln(!empty($files) ? "Cron files all valid" : "No cron files available to check");
+        }
 
         return empty($errors) ? self::SUCCESS : self::FAILURE;
     }
