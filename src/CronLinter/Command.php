@@ -70,6 +70,6 @@ class Command extends BaseCommand
             $output->writeln(!empty($files) ? "Cron files all valid" : "No cron files available to check");
         }
 
-        return empty($errors) ? self::SUCCESS : self::FAILURE;
+        return empty($errors) && !empty($files) ? self::SUCCESS : self::FAILURE;
     }
 }
