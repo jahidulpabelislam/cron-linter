@@ -162,38 +162,28 @@ final class LinterTest extends TestCase {
     }
 
     public function testLintFilesWithGlobPattern(): void {
-        $fixturesDir = __DIR__ . "/../fixtures/valid";
-
-        $errors = CronLinter::lintFiles(["$fixturesDir/cron.*"]);
+        $errors = CronLinter::lintFiles([__DIR__ . "/../fixtures/valid/cron.*"]);
         $this->assertCount(0, $errors);
     }
 
     public function testLintFilesWithGlobPatternAndInvalidContent(): void {
-        $fixturesDir = __DIR__ . "/../fixtures/invalid";
-
-        $errors = CronLinter::lintFiles(["$fixturesDir/cron.*"]);
+        $errors = CronLinter::lintFiles([__DIR__ . "/../fixtures/invalid/cron.*"]);
         $this->assertCount(1, $errors);
         $this->assertSame(["Line 1 has missing time expression"], $errors);
     }
 
     public function testLintFilesWithGlobPatternNoMatches(): void {
-        $fixturesDir = __DIR__ . "/../fixtures/valid";
-
-        $errors = CronLinter::lintFiles(["$fixturesDir/nonexistent.*"]);
+        $errors = CronLinter::lintFiles([__DIR__ . "/../fixtures/valid/nonexistent.*"]);
         $this->assertCount(0, $errors);
     }
 
     public function testLintFilesWithGlobPatternAndBaseDir(): void {
-        $fixturesDir = __DIR__ . "/../fixtures/valid";
-
-        $errors = CronLinter::lintFiles(["/cron.*"], $fixturesDir);
+        $errors = CronLinter::lintFiles(["/cron.*"], __DIR__ . "/../fixtures/valid");
         $this->assertCount(0, $errors);
     }
 
     public function testLintFilesWithDirectoryGlob(): void {
-        $fixturesDir = __DIR__ . "/../fixtures/valid";
-
-        $errors = CronLinter::lintFiles(["$fixturesDir/cron.d/*"]);
+        $errors = CronLinter::lintFiles([__DIR__ . "/../fixtures/valid/cron.d/*"]);
         $this->assertCount(0, $errors);
     }
 }
