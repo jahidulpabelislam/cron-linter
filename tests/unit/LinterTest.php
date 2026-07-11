@@ -162,72 +162,38 @@ final class LinterTest extends TestCase {
     }
 
     public function testLintFilesWithGlobPattern(): void {
-        $dir = sys_get_temp_dir() . "/cron-linter-test-" . uniqid();
-        mkdir($dir);
+        $fixturesDir = __DIR__ . "/../fixtures/valid";
 
-        file_put_contents("$dir/cron.daily", "* * * * * php test.php\n");
-        file_put_contents("$dir/cron.weekly", "0 0 * * 0 php test.php\n");
-        file_put_contents("$dir/other", "invalid content\n");
-
-        $errors = CronLinter::lintFiles(["$dir/cron.*"]);
+        $errors = CronLinter::lintFiles(["$fixturesDir/cron.*"]);
         $this->assertCount(0, $errors);
-
-        unlink("$dir/cron.daily");
-        unlink("$dir/cron.weekly");
-        unlink("$dir/other");
-        rmdir($dir);
     }
 
     public function testLintFilesWithGlobPatternAndInvalidContent(): void {
-        $dir = sys_get_temp_dir() . "/cron-linter-test-" . uniqid();
-        mkdir($dir);
+        $fixturesDir = __DIR__ . "/../fixtures/invalid";
 
-        file_put_contents("$dir/cron.daily", "invalid line\n");
-
-        $errors = CronLinter::lintFiles(["$dir/cron.*"]);
+        $errors = CronLinter::lintFiles(["$fixturesDir/cron.*"]);
         $this->assertCount(1, $errors);
         $this->assertSame(["Line 1 has missing time expression"], $errors);
-
-        unlink("$dir/cron.daily");
-        rmdir($dir);
     }
 
     public function testLintFilesWithGlobPatternNoMatches(): void {
-        $dir = sys_get_temp_dir() . "/cron-linter-test-" . uniqid();
-        mkdir($dir);
+        $fixturesDir = __DIR__ . "/../fixtures/valid";
 
-        $errors = CronLinter::lintFiles(["$dir/cron.*"]);
+        $errors = CronLinter::lintFiles(["$fixturesDir/nonexistent.*"]);
         $this->assertCount(0, $errors);
-
-        rmdir($dir);
     }
 
     public function testLintFilesWithGlobPatternAndBaseDir(): void {
-        $dir = sys_get_temp_dir() . "/cron-linter-test-" . uniqid();
-        mkdir($dir);
+        $fixturesDir = __DIR__ . "/../fixtures/valid";
 
-        file_put_contents("$dir/cron.daily", "* * * * * php test.php\n");
-
-        $errors = CronLinter::lintFiles(["/cron.*"], $dir);
+        $errors = CronLinter::lintFiles(["/cron.*"], $fixturesDir);
         $this->assertCount(0, $errors);
-
-        unlink("$dir/cron.daily");
-        rmdir($dir);
     }
 
     public function testLintFilesWithDirectoryGlob(): void {
-        $dir = sys_get_temp_dir() . "/cron-linter-test-" . uniqid();
-        mkdir("$dir/cron.d", 0777, true);
+        $fixturesDir = __DIR__ . "/../fixtures/valid";
 
-        file_put_contents("$dir/cron.d/job1", "* * * * * php test.php\n");
-        file_put_contents("$dir/cron.d/job2", "0 12 * * * php test.php\n");
-
-        $errors = CronLinter::lintFiles(["$dir/cron.d/*"]);
+        $errors = CronLinter::lintFiles(["$fixturesDir/cron.d/*"]);
         $this->assertCount(0, $errors);
-
-        unlink("$dir/cron.d/job1");
-        unlink("$dir/cron.d/job2");
-        rmdir("$dir/cron.d");
-        rmdir($dir);
     }
 }
