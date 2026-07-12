@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JPI\CronLinter\Tests;
+namespace JPI\CronLinter\Tests\Unit;
 
 use JPI\CronLinter;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \JPI\CronLinter
+ * @covers \JPI\CronLinter:lintContent
+ * @covers \JPI\CronLinter:validateLine
  */
 final class LinterTest extends TestCase {
 
