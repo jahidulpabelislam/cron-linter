@@ -35,7 +35,7 @@ final class CronLinter
 
     private function lintFile(string $filepath): void
     {
-        if (!file_exists($filepath)) {
+        if (!file_exists($filepath) || !is_file($filepath)) {
             $this->errors[] = "Missing cron file: $filepath";
             return;
         }
