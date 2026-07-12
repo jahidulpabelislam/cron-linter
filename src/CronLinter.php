@@ -22,7 +22,7 @@ final class CronLinter
 
             if (strpbrk($filepath, '*?[{') !== false) {
                 foreach (glob($filepath) ?: [] as $matchedFile) {
-                    if (is_file($matchedFile)) {
+                    if (!is_dir($matchedFile)) {
                         $linter->lintFile($matchedFile);
                     }
                 }
