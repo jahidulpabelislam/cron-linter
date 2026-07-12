@@ -20,7 +20,7 @@ final class CronLinter
                 $filepath = rtrim($baseDir, "/") . "/" . ltrim($filepath, "/");
             }
 
-            if (!file_exists($filepath)) {
+            if (!file_exists($filepath) || !is_file($filepath)) {
                 $linter->errors[] = "Missing cron file: $filepath";
                 continue;
             }
