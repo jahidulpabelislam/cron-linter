@@ -23,6 +23,14 @@ files:
   - /cron-2
 ```
 
+File paths can also include glob patterns to match multiple files at once.
+
+```yml
+files:
+  - /etc/cron.d/*
+  - /cron.*
+```
+
 Then run `php vendor/bin/lintcron`, which will list any errors found in the specified cron files. You can use a different config file location using the `--config-file` option.
 
 You can also specify files to be linted using the `--files` option, providing a comma-separated list of file paths.

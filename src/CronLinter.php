@@ -20,18 +20,32 @@ final class CronLinter
                 $filepath = rtrim($baseDir, "/") . "/" . ltrim($filepath, "/");
             }
 
-            if (!file_exists($filepath)) {
-                $linter->errors[] = "Missing cron file: $filepath";
+            if (strpbrk($filepath, '*?[{') !== false) {
+                foreach (glob($filepath) ?: [] as $matchedFile) {
+                    if (!is_dir($matchedFile)) {
+                        $linter->lintFile($matchedFile);
+                    }
+                }
                 continue;
             }
 
-            $lines = explode("\n", file_get_contents($filepath));
-            foreach ($lines as $lineNo => $line) {
-                $linter->validateLine($line, $lineNo + 1);
-            }
+            $linter->lintFile($filepath);
         }
 
         return $linter->errors;
+    }
+
+    private function lintFile(string $filepath): void
+    {
+        if (!file_exists($filepath) || !is_file($filepath)) {
+            $this->errors[] = "Missing cron file: $filepath";
+            return;
+        }
+
+        $lines = explode("\n", file_get_contents($filepath));
+        foreach ($lines as $lineNo => $line) {
+            $this->validateLine($line, $lineNo + 1);
+        }
     }
 
     public static function lintContent(string $content): array

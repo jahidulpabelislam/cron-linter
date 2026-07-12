@@ -29,7 +29,8 @@ class Command extends BaseCommand
                 "files",
                 null,
                 InputOption::VALUE_OPTIONAL,
-                "Comma separated list of cron files to check"
+                "Comma separated list of cron files to check",
+                false
             )
         ;
     }
@@ -38,8 +39,7 @@ class Command extends BaseCommand
     {
         $baseDir = getcwd();
 
-        $files = $input->getOption("files");
-        if (!$files) {
+        if ($input->getOption("files") === false) {
             $configFile = $input->getOption("config-file");
 
             if (!$configFile) {
@@ -54,12 +54,21 @@ class Command extends BaseCommand
 
             $files = $configuration["files"] ?? [];
         } else {
-            $files = explode(",", $files);
+            $files = explode(",", $input->getOption("files") ?: "");
         }
+
+        $files = array_values(array_filter(array_map(
+            static fn (mixed $file): string => trim((string) $file),
+            (array) $files
+        )));
 
         $errors = CronLinter::lintFiles($files, $baseDir);
 
-        $output->writeln($errors);
+        if (!empty($errors)) {
+            $output->writeln($errors);
+        } else {
+            $output->writeln(!empty($files) ? "Cron files all valid" : "No cron files available to check");
+        }
 
         return empty($errors) ? self::SUCCESS : self::FAILURE;
     }
