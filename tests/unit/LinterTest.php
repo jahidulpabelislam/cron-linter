@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JPI\CronLinter\Tests;
+namespace JPI\CronLinter\Tests\Unit;
 
 use JPI\CronLinter;
 use PHPUnit\Framework\Attributes\DataProvider;
