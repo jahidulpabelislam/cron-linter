@@ -67,7 +67,6 @@ final class CronLinter
         $linter = new static();
         if (empty($content)) {
             return $linter;
-
         }
 
         $lines = explode("\n", $content);
