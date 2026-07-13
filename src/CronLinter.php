@@ -23,7 +23,7 @@ final class CronLinter
             if (strpbrk($filepath, '*?[{') !== false) {
                 foreach (glob($filepath) ?: [] as $matchedFile) {
                     if (!is_dir($matchedFile)) {
-                        $linter->lintFile($matchedFile);
+                        $linter->lintFile($matchedFile, fromPattern: true);
                     }
                 }
                 continue;
@@ -35,10 +35,19 @@ final class CronLinter
         return $linter->errors;
     }
 
-    private function lintFile(string $filepath): void
+    private function lintFile(string $filepath, bool $fromPattern = false): void
     {
         if (!file_exists($filepath) || !is_file($filepath)) {
             $this->errors[] = "Missing cron file: $filepath";
+            return;
+        }
+
+        $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filepath);
+        if ($mime !== "text/plain") {
+            // Only error if directly wanted this file
+            if (!$fromPattern) {
+                $this->errors[] = "Invalid cron file: $filepath";
+            }
             return;
         }
 
