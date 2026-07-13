@@ -51,6 +51,9 @@ $linter = \JPI\CronLinter::lintContent($expression);
 // Call getErrors() to retrieve errors, grouped by file path (or empty string for content linting)
 // Returns an empty array if no errors found
 $errors = $linter->getErrors();
+
+// Call getNumberOfFilesChecked() to retrieve the number of files that were checked
+$numberOfFilesChecked = $linter->getNumberOfFilesChecked();
 ```
 
 ## Support
