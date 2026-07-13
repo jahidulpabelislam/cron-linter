@@ -68,7 +68,7 @@ final class CronLinter
 
         $lines = explode("\n", $content);
         foreach ($lines as $lineNo => $line) {
-            $linter->validateLine($line, $lineNo + 1);
+            $linter->validateLine($line, "", $lineNo + 1);
         }
 
         return $linter->errors;

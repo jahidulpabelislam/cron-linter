@@ -36,6 +36,8 @@ final class FilesTest extends TestCase {
     public function testWithGlobAndInvalidContent(): void {
         $errors = CronLinter::lintFiles([__DIR__ . "/../fixtures/invalid/cron.*"]);
         $this->assertCount(1, $errors);
-        $this->assertSame(["Line 1 has missing time expression"], $errors);
+        $expectedFile = realpath(__DIR__ . "/../fixtures/invalid/cron.daily");
+        $this->assertArrayHasKey($expectedFile, $errors);
+        $this->assertSame(["Line 1 has missing time expression"], $errors[$expectedFile]);
     }
 }
