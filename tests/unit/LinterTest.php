@@ -64,8 +64,8 @@ final class LinterTest extends TestCase {
 
     #[DataProvider("validProvider")]
     public function testValid(string $expression): void {
-        $errors = CronLinter::lintContent($expression);
-        $this->assertCount(0, $errors);
+        $linter = CronLinter::lintContent($expression);
+        $this->assertCount(0, $linter->getErrors());
     }
 
     public static function invalidProvider(): array {
@@ -158,7 +158,7 @@ final class LinterTest extends TestCase {
 
     #[DataProvider("invalidProvider")]
     public function testInvalid(string $expression, array $expectedErrors): void {
-        $errors = CronLinter::lintContent($expression);
+        $errors = CronLinter::lintContent($expression)->getErrors();
         $this->assertCount(1, $errors);
         $this->assertArrayHasKey("", $errors);
         $this->assertCount(count($expectedErrors), $errors[""]);
