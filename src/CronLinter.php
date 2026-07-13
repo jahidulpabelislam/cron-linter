@@ -6,13 +6,14 @@ namespace JPI;
 
 final class CronLinter
 {
+    private int $numberOfFilesChecked = 0;
     private array $errors = [];
 
-    public static function lintFiles(array $files, string $baseDir = ""): array
+    public static function lintFiles(array $files, string $baseDir = ""): self
     {
         $linter = new static();
         if (empty($files)) {
-            return $linter->errors;
+            return $linter;
         }
 
         foreach ($files as $filepath) {
@@ -32,11 +33,13 @@ final class CronLinter
             $linter->lintFile($baseDir, $filepath);
         }
 
-        return $linter->errors;
+        return $linter;
     }
 
     private function lintFile(string $baseDir, string $filepath, bool $fromPattern = false): void
     {
+        $this->numberOfFilesChecked++;
+
         $relativePath = str_replace($baseDir, "", $filepath);
         if (!file_exists($filepath) || !is_file($filepath)) {
             $this->errors[$relativePath][] = "Missing cron file";
@@ -58,12 +61,13 @@ final class CronLinter
         }
     }
 
-    public static function lintContent(string $content): array
+    public static function lintContent(string $content): self
     {
         $content = trim($content, "\n ");
         $linter = new static();
         if (empty($content)) {
-            return $linter->errors;
+            return $linter;
+
         }
 
         $lines = explode("\n", $content);
@@ -71,7 +75,7 @@ final class CronLinter
             $linter->validateLine($line, "", $lineNo + 1);
         }
 
-        return $linter->errors;
+        return $linter;
     }
 
     public function validateLine(string $line, string $id, int $lineNo): void
@@ -201,5 +205,15 @@ final class CronLinter
         if (preg_match("/^(\d|\*)$/i", (string) (substr($cmd, 0, 1) == "*"))) {
             $this->errors[$id][] = "Line $lineNo has invalid Cmd: $cmd";
         }
+    }
+
+    public function getNumberOfFilesChecked(): int
+    {
+        return $this->numberOfFilesChecked;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }

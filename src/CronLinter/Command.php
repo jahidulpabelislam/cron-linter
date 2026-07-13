@@ -62,7 +62,9 @@ class Command extends BaseCommand
             (array) $files
         )));
 
-        $groupedErrors = CronLinter::lintFiles($files, $baseDir);
+        $linter = CronLinter::lintFiles($files, $baseDir);
+
+        $groupedErrors = $linter->getErrors();
 
         if (!empty($groupedErrors)) {
             $isFirst = true;
