@@ -22,10 +22,15 @@ final class CronLinter
             }
 
             if (strpbrk($filepath, '*?[{') !== false) {
+                $countBefore = $linter->getNumberOfFilesChecked();
                 foreach (glob($filepath) ?: [] as $matchedFile) {
                     if (!is_dir($matchedFile)) {
                         $linter->lintFile($baseDir, $matchedFile, fromPattern: true);
                     }
+                }
+
+                if ($linter->getNumberOfFilesChecked() <= $countBefore) {
+                    $linter->errors[$filepath][] = "No matching cron files found";
                 }
                 continue;
             }

@@ -33,7 +33,11 @@ final class FilesTest extends TestCase {
 
     public function testWithGlobNoMatches(): void {
         $linter = CronLinter::lintFiles([__DIR__ . "/../fixtures/valid/nonexistent.*"]);
-        $this->assertCount(0, $linter->getErrors());
+        $errors = $linter->getErrors();
+        $this->assertCount(1, $errors);
+        $filepath = __DIR__ . "/../fixtures/valid/nonexistent.*";
+        $this->assertArrayHasKey($filepath, $errors);
+        $this->assertSame(["No matching cron files found"], $errors[$filepath]);
         $this->assertSame(0, $linter->getNumberOfFilesChecked());
     }
 
