@@ -41,13 +41,16 @@ Or if you want to do it programmatically on files or content.
 // Lint cron files
 // $files is an array of file paths for cron files to check
 // $baseDir (optional) is a string containing the base directory path for all file paths
-$errors = \JPI\CronLinter::lintFiles($files, $baseDir);
+$linter = \JPI\CronLinter::lintFiles($files, $baseDir);
 
 // Lint cron content directly
 // $expression is a string containing one or more cron expressions (one per line)
-$errors = \JPI\CronLinter::lintContent($expression);
+$linter = \JPI\CronLinter::lintContent($expression);
 
-// Both methods return an array of error messages, or an empty array if no errors found
+// Both methods return a CronLinter instance
+// Call getErrors() to retrieve errors, grouped by file path (or empty string for content linting)
+// Returns an empty array if no errors found
+$errors = $linter->getErrors();
 ```
 
 ## Support
