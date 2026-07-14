@@ -64,6 +64,8 @@ class Command extends BaseCommand
 
         $linter = CronLinter::lintFiles($files, $baseDir);
 
+        $output->writeln("Checked " . $linter->getNumberOfFilesChecked() . " cron files" . PHP_EOL);
+
         $groupedErrors = $linter->getErrors();
 
         if (!empty($groupedErrors)) {
