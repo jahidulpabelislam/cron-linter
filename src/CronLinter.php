@@ -43,10 +43,9 @@ final class CronLinter
 
     private function lintFile(string $baseDir, string $filepath, bool $fromPattern = false): void
     {
-        $this->numberOfFilesChecked++;
-
         $relativePath = str_replace($baseDir, "", $filepath);
         if (!file_exists($filepath) || !is_file($filepath)) {
+            $this->numberOfFilesChecked++;
             $this->errors[$relativePath][] = "Missing cron file";
             return;
         }
@@ -55,10 +54,13 @@ final class CronLinter
         if ($mime !== "text/plain") {
             // Only error if directly wanted this file
             if (!$fromPattern) {
+                $this->numberOfFilesChecked++;
                 $this->errors[$relativePath][] = "Invalid cron file";
             }
             return;
         }
+
+        $this->numberOfFilesChecked++;
 
         $lines = explode("\n", file_get_contents($filepath));
         foreach ($lines as $lineNo => $line) {
