@@ -153,6 +153,16 @@ final class CronLinter
 
                 $steppedValues = explode("/", $value);
                 if (count($steppedValues) > 2) {
+                    $firstValue = $steppedValues[0];
+                    if ($firstValue !== "*") {
+                        $rangeValues = array_values(array_filter(explode("-", $firstValue), fn($value) => $value !== ""));
+                        if ($firstValue !== "" && $firstValue[0] === "-")  {
+                            $rangeValues[0] = "-" . $rangeValues[0];
+                        }
+                        if (count($rangeValues) < 2) {
+                            $this->errors[] = "$valueErrorPrefix $firstValue (must be wildcard `*` or a range)";
+                        }
+                    }
                     $stepsErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
                     $this->errors[$id][] = "Line $lineNo contains too many step values for $stepsErrorName: $value";
                     continue;
