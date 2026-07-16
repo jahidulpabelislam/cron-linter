@@ -6,13 +6,14 @@ namespace JPI;
 
 final class CronLinter
 {
+    private int $numberOfFilesChecked = 0;
     private array $errors = [];
 
-    public static function lintFiles(array $files, string $baseDir = ""): array
+    public static function lintFiles(array $files, string $baseDir = ""): self
     {
         $linter = new static();
         if (empty($files)) {
-            return $linter->errors;
+            return $linter;
         }
 
         foreach ($files as $filepath) {
@@ -21,50 +22,69 @@ final class CronLinter
             }
 
             if (strpbrk($filepath, '*?[{') !== false) {
+                $countBefore = $linter->getNumberOfFilesChecked();
                 foreach (glob($filepath) ?: [] as $matchedFile) {
                     if (!is_dir($matchedFile)) {
-                        $linter->lintFile($matchedFile);
+                        $linter->lintFile($baseDir, $matchedFile, fromPattern: true);
                     }
+                }
+
+                if ($linter->getNumberOfFilesChecked() <= $countBefore) {
+                    $linter->errors[$filepath][] = "No matching cron files found";
                 }
                 continue;
             }
 
-            $linter->lintFile($filepath);
+            $linter->lintFile($baseDir, $filepath);
         }
 
-        return $linter->errors;
+        return $linter;
     }
 
-    private function lintFile(string $filepath): void
+    private function lintFile(string $baseDir, string $filepath, bool $fromPattern = false): void
     {
+        $relativePath = str_replace($baseDir, "", $filepath);
         if (!file_exists($filepath) || !is_file($filepath)) {
-            $this->errors[] = "Missing cron file: $filepath";
+            $this->numberOfFilesChecked++;
+            $this->errors[$relativePath][] = "Missing cron file";
             return;
         }
 
+        $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filepath);
+        if ($mime !== "text/plain") {
+            // Only error if directly wanted this file
+            if (!$fromPattern) {
+                $this->numberOfFilesChecked++;
+                $this->errors[$relativePath][] = "Invalid cron file";
+            }
+            return;
+        }
+
+        $this->numberOfFilesChecked++;
+
         $lines = explode("\n", file_get_contents($filepath));
         foreach ($lines as $lineNo => $line) {
-            $this->validateLine($line, $lineNo + 1);
+            $this->validateLine($line, $relativePath, $lineNo + 1);
         }
     }
 
-    public static function lintContent(string $content): array
+    public static function lintContent(string $content): self
     {
         $content = trim($content, "\n ");
         $linter = new static();
         if (empty($content)) {
-            return $linter->errors;
+            return $linter;
         }
 
         $lines = explode("\n", $content);
         foreach ($lines as $lineNo => $line) {
-            $linter->validateLine($line, $lineNo + 1);
+            $linter->validateLine($line, "", $lineNo + 1);
         }
 
-        return $linter->errors;
+        return $linter;
     }
 
-    public function validateLine(string $line, int $lineNo): void
+    public function validateLine(string $line, string $id, int $lineNo): void
     {
         // Skip comment lines or empty lines
         if (empty($line) || str_starts_with($line, "#")) {
@@ -82,7 +102,7 @@ final class CronLinter
         );
 
         if (count($args) < 6) {
-            $this->errors[] = "Line $lineNo has missing time expression";
+            $this->errors[$id][] = "Line $lineNo has missing time expression";
             return;
         }
 
@@ -144,7 +164,7 @@ final class CronLinter
                         }
                     }
                     $stepsErrorName = $hasMultipleValues ? "{$name}[$offset]" : $name;
-                    $this->errors[] = "Line $lineNo contains too many step values for $stepsErrorName: $value";
+                    $this->errors[$id][] = "Line $lineNo contains too many step values for $stepsErrorName: $value";
                     continue;
                 }
 
@@ -156,7 +176,7 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) < 2) {
-                        $this->errors[] = "$valueErrorPrefix $firstValue (must be wildcard `*` or a range)";
+                        $this->errors[$id][] = "$valueErrorPrefix $firstValue (must be wildcard `*` or a range)";
                         $steppedValues = [$steppedValues[1]];
                     }
                 }
@@ -167,14 +187,14 @@ final class CronLinter
                         $rangeValues[0] = "-" . $rangeValues[0];
                     }
                     if (count($rangeValues) > 2) {
-                        $this->errors[] = "$rangeErrorPrefix $steppedValue (too many values)";
+                        $this->errors[$id][] = "$rangeErrorPrefix $steppedValue (too many values)";
                         continue;
                     }
 
                     $hasInvalidValue = false;
                     foreach ($rangeValues as $rangeValue) {
                         if (!preg_match($regEx, $rangeValue) || ($rangeValue !== "*" && !in_array(strtolower($rangeValue), $validValues))) {
-                            $this->errors[] = "$valueErrorPrefix $rangeValue";
+                            $this->errors[$id][] = "$valueErrorPrefix $rangeValue";
                             $hasInvalidValue = true;
                         }
                     }
@@ -185,10 +205,10 @@ final class CronLinter
                             $sorted = $rangeValues;
                             sort($sorted);
                             if ($sorted !== $rangeValues) {
-                                $this->errors[] = "$rangeErrorPrefix $steppedValue (must be in ascending order)";
+                                $this->errors[$id][] = "$rangeErrorPrefix $steppedValue (must be in ascending order)";
                             }
                         } else {
-                            $this->errors[] = "$rangeErrorPrefix $steppedValue (must be numeric)";
+                            $this->errors[$id][] = "$rangeErrorPrefix $steppedValue (must be numeric)";
                         }
                     }
                 }
@@ -199,7 +219,17 @@ final class CronLinter
 
         $cmd = implode(" ", array_slice($args, 5));
         if (preg_match("/^(\d|\*)$/i", (string) (substr($cmd, 0, 1) == "*"))) {
-            $this->errors[] = "Line $lineNo has invalid Cmd: $cmd";
+            $this->errors[$id][] = "Line $lineNo has invalid Cmd: $cmd";
         }
+    }
+
+    public function getNumberOfFilesChecked(): int
+    {
+        return $this->numberOfFilesChecked;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }

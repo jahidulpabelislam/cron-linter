@@ -62,14 +62,29 @@ class Command extends BaseCommand
             (array) $files
         )));
 
-        $errors = CronLinter::lintFiles($files, $baseDir);
+        $linter = CronLinter::lintFiles($files, $baseDir);
 
-        if (!empty($errors)) {
-            $output->writeln($errors);
+        $output->writeln("Checked " . $linter->getNumberOfFilesChecked() . " cron files" . PHP_EOL);
+
+        $groupedErrors = $linter->getErrors();
+
+        if (!empty($groupedErrors)) {
+            $isFirst = true;
+            foreach ($groupedErrors as $file => $errors) {
+                if ($isFirst) {
+                    $isFirst = false;
+                } else {
+                    $output->writeln(PHP_EOL);
+                }
+                $output->writeln($file . ":");
+                foreach ($errors as $error) {
+                    $output->writeln("    " . $error);
+                }
+            }
         } else {
             $output->writeln(!empty($files) ? "Cron files all valid" : "No cron files available to check");
         }
 
-        return empty($errors) ? self::SUCCESS : self::FAILURE;
+        return empty($groupedErrors) ? self::SUCCESS : self::FAILURE;
     }
 }
